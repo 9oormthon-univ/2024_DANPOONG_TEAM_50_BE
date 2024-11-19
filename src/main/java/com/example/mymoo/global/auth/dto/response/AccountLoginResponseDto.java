@@ -1,13 +1,14 @@
 package com.example.mymoo.global.auth.dto.response;
 
 import lombok.Builder;
+import lombok.NonNull;
 
 @Builder
 public record AccountLoginResponseDto(
-    Long accountId,
-    String userRole,
-    String accessToken,
-    String refreshToken
+    @NonNull Long accountId,
+    @NonNull String userRole,
+    @NonNull String accessToken,
+    @NonNull String refreshToken
 ) {
 
 }

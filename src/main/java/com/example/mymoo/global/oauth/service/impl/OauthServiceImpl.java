@@ -6,9 +6,12 @@ import com.example.mymoo.global.auth.repository.AuthRepository;
 import com.example.mymoo.global.enums.UserRole;
 import com.example.mymoo.global.oauth.dto.kakao.KakaoTokenResponse;
 import com.example.mymoo.global.oauth.dto.kakao.KakaoUserInfo;
+import com.example.mymoo.global.oauth.dto.kakao.KakaoUserInfo.KakaoAccount;
+import com.example.mymoo.global.oauth.dto.kakao.KakaoUserInfo.KakaoAccount.Profile;
 import com.example.mymoo.global.oauth.dto.response.KakaoLoginResponseDto;
 import com.example.mymoo.global.oauth.service.OAuthService;
 import com.example.mymoo.global.security.jwt.JwtTokenProvider;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +24,12 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class OauthServiceImpl implements OAuthService {
+public class OAuthServiceImpl implements OAuthService {
 
     @Value("${kakao.client-id}")
     private String kakaoClientId;
@@ -100,6 +104,7 @@ public class OauthServiceImpl implements OAuthService {
             .body(BodyInserters.fromFormData(formData))
             .retrieve()
             .bodyToMono(KakaoTokenResponse.class)
+            .transform(mono -> applyKakaoApiErrorHandling(mono, "access token"))
             .map(KakaoTokenResponse::accessToken)
             .block(); // 동기 요청
     }
@@ -114,15 +119,28 @@ public class OauthServiceImpl implements OAuthService {
             .body(BodyInserters.fromFormData("property_keys", "[\"kakao_account.email\",\"kakao_account.profile\"]"))
             .retrieve()
             .bodyToMono(KakaoUserInfo.class)
+            .transform(mono -> applyKakaoApiErrorHandling(mono, "user info"))
             .block(); // 동기 요청
     }
 
     private Account createNewAccount(KakaoUserInfo userInfo) {
+        KakaoAccount kakaoAccount = Objects.requireNonNull(
+            userInfo.kakaoAccount(),
+            "KakaoAccount cannot be null"
+        );
+        Profile profile = Objects.requireNonNull(
+            kakaoAccount.profile(),
+            "Profile cannot be null"
+        );
+        String nickname = Objects.requireNonNull(
+            profile.nickname(),
+            "Nickname cannot be null as it is a mandatory consent item in Kakao Login"
+        );
         String kakaoUserEmail = userInfo.id() + "_" + userInfo.kakaoAccount().email();
         String password = passwordEncoder.encode(UUID.randomUUID().toString());
-        String nickname = userInfo.kakaoAccount().profile().nickname();
-        String profileImageUrl = userInfo.kakaoAccount().profile().profileImageUrl();
+        String profileImageUrl = profile.profileImageUrl();
         log.info("received kakao data. email: {} nickname: {} profileImageUrl: {}", kakaoUserEmail, nickname, profileImageUrl);
+        // Profile image URL can be null as it's an optional consent item in Kakao Login
         if (profileImageUrl == null){
             profileImageUrl = getDefaultImage();
         }
@@ -157,7 +175,12 @@ public class OauthServiceImpl implements OAuthService {
             .isNewUser(isNewUser)
             .build();
     }
-
+    private <T> Mono<T> applyKakaoApiErrorHandling(Mono<T> mono, String operationName) {
+        return mono.onErrorResume(error -> {
+            log.error("Error occurred while retrieving Kakao {}: {}", operationName, error.getMessage());
+            return Mono.empty(); // 에러 발생 시 빈 Mono 반환
+        });
+    }
     private String getDefaultImage(){
         if (Math.random() < 0.5) {
             return "https://mymoo.s3.ap-northeast-2.amazonaws.com/%EB%A7%88%EC%9D%B4.png";
