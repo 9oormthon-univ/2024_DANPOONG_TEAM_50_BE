@@ -1,7 +1,8 @@
 package com.example.mymoo.domain.donation.entity;
 
 import com.example.mymoo.domain.account.entity.Account;
-import com.example.mymoo.domain.donator.entity.Donator;
+import com.example.mymoo.domain.donation.exception.DonationException;
+import com.example.mymoo.domain.donation.exception.DonationExceptionDetails;
 import com.example.mymoo.domain.store.entity.Store;
 import com.example.mymoo.global.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -45,18 +46,26 @@ public class Donation extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "donator_id", nullable = false)
-    protected Donator donator;
+    protected Account account;
 
     @Builder
     public Donation(
         final Long point,
         final Boolean isUsed,
         final Store store,
-        final Donator donator
+        final Account account
     ) {
         this.point = point;
         this.isUsed = isUsed;
         this.store = store;
-        this.donator = donator;
+        this.account = account;
+    }
+
+    public void setIsUsedToTrue() {
+        // 이미 사용된 후원을 사용하려 할 때
+        if (this.isUsed){
+            throw new DonationException(DonationExceptionDetails.DONATION_ALREADY_USED);
+        }
+        this.isUsed = true;
     }
 }

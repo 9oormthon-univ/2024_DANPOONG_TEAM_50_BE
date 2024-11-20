@@ -29,10 +29,9 @@ public class Child extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Size(min = 2, max = 10)
-    @Column(nullable = false)
-    private String nickname;
+    @NotNull(message = "암호화된 카드 번호는 필수 항목입니다")
+    @Column(name = "card_number", nullable = false)
+    private String cardNumber;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -41,10 +40,10 @@ public class Child extends BaseEntity {
 
     @Builder
     public Child(
-        final String nickname,
+        final String cardNumber,
         final Account account
     ) {
-        this.nickname = nickname;
+        this.cardNumber = cardNumber;
         this.account = account;
     }
 }
