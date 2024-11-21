@@ -5,8 +5,15 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+# env file
+.env
+
+# dummy data insert script
+data-dummy.sql
+
 # config file
 /src/main/resources/application-dev.yml
+/src/main/resources/application-pub.yml
 
 ### STS ###
 .apt_generated
