@@ -17,13 +17,12 @@ import com.example.mymoo.domain.donationusage.entity.DonationUsage;
 import com.example.mymoo.domain.donationusage.exception.DonationUsageException;
 import com.example.mymoo.domain.donationusage.exception.DonationUsageExceptionDetails;
 import com.example.mymoo.domain.donationusage.repository.DonationUsageRepository;
-import com.example.mymoo.domain.store.entity.Store;
 import com.example.mymoo.domain.store.exception.StoreException;
 import com.example.mymoo.domain.store.exception.StoreExceptionDetails;
 import com.example.mymoo.domain.store.repository.StoreRepository;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
