@@ -31,9 +31,8 @@ public class DonationUsage extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @Size(min = 1, max = 255)
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String message;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
