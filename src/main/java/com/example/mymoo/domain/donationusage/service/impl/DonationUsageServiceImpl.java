@@ -32,7 +32,6 @@ public class DonationUsageServiceImpl implements DonationUsageService {
 
     private final DonationRepository donationRepository;
     private final ChildRepository childRepository;
-    private final StoreRepository storeRepository;
     private final DonationUsageRepository donationUsageRepository;
 
     @Override
@@ -44,11 +43,9 @@ public class DonationUsageServiceImpl implements DonationUsageService {
                 .orElseThrow(() -> new DonationException(DonationExceptionDetails.DONATION_NOT_FOUND));
         Child child = childRepository.findByAccount_Id(donationUsageCreateRequestDto.childAccountId())
                 .orElseThrow(() -> new ChildException(ChildExceptionDetails.CHILD_NOT_FOUND));
-        Store store = storeRepository.findByAccount_Id(storeAccountId)
-            .orElseThrow(() -> new StoreException(StoreExceptionDetails.STORE_NOT_FOUND));
-
+        Store store = donation.getStore();
         // 자신의 가게가 아닌 다른 가게의 후원을 사용하려 할 때
-        if (!Objects.equals(donation.getStore().getId(), store.getId())){
+        if (!Objects.equals(store.getAccount().getId(), storeAccountId)){
             throw new DonationUsageException(DonationUsageExceptionDetails.FORBIDDEN_ACCESS_TO_OTHER_STORE);
         }
 
