@@ -2,15 +2,16 @@ package com.example.mymoo.domain.account.dto.response;
 
 import com.example.mymoo.domain.account.entity.Account;
 import lombok.Builder;
+import lombok.NonNull;
 
 @Builder
 public record ReadAccountResponseDto(
-    Long accountId,
-    String email,
+    @NonNull Long accountId,
+    @NonNull String email,
     String phone_number,
-    String nickname,
-    Long point,
-    String profileImageUrl
+    @NonNull String nickname,
+    @NonNull Long point,
+    @NonNull String profileImageUrl
 ) {
     public static ReadAccountResponseDto from(Account account){
         return ReadAccountResponseDto.builder()

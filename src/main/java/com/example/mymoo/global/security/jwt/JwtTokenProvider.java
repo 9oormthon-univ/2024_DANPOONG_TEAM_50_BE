@@ -63,7 +63,7 @@ public class JwtTokenProvider {
         return createToken(
             account.getId(),
             Collections.singletonList(
-                new SimpleGrantedAuthority(String.valueOf(account.getRole()))
+                new SimpleGrantedAuthority(account.getRole().getAuthority())
             ),
             ACCESS_TOKEN_VALIDITY
         );
@@ -82,7 +82,7 @@ public class JwtTokenProvider {
         return createToken(
             account.getId(),
             Collections.singletonList(
-                new SimpleGrantedAuthority(String.valueOf(account.getRole()))
+                new SimpleGrantedAuthority(account.getRole().getAuthority())
             ),
             REFRESH_TOKEN_VALIDITY
         );
