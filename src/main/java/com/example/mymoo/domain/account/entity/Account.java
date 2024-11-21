@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -91,4 +92,14 @@ public class Account extends BaseEntity {
         }
         this.point -= usingPoint;
     }
+
+    public void changeUserRoleTo(UserRole userRole){
+        if (Objects.equals(this.role.getAuthority(), "DONATOR")){
+            this.role = userRole;
+        }
+        else{
+            throw new AccountException(AccountExceptionDetails.NOT_ABLE_TO_CHANGE_ROLE);
+        }
+    }
+
 }
