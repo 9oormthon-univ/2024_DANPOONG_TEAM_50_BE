@@ -66,7 +66,7 @@ public class DonationController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
         }
     )
-    @GetMapping("/donations/stores/{storeId}")
+    @GetMapping("/stores/{storeId}")
     public ResponseEntity<ReadStoreDonationListResponseDto> getStoreDonationList(
         @PathVariable Long storeId,
         @PageableDefault(size = 10, sort = "createdAt", direction = Direction.ASC) @Parameter(hidden = true) Pageable pageable
@@ -83,7 +83,7 @@ public class DonationController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
         }
     )
-    @GetMapping("/donations/accounts")
+    @GetMapping("/accounts")
     @PreAuthorize("hasAuthority('DONATOR')")
     public ResponseEntity<ReadAccountDonationListResponseDto> getAccountDonationList(
         @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -103,7 +103,7 @@ public class DonationController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
         }
     )
-    @GetMapping("/donations/{donationId}")
+    @GetMapping("/{donationId}")
     @PreAuthorize("hasAuthority('DONATOR')")
     public ResponseEntity<ReadDonationResponseDto> getDonation(
         @AuthenticationPrincipal CustomUserDetails userDetails,
