@@ -86,7 +86,9 @@ public class StoreServiceImpl implements StoreService {
             final Long storeId,
             final Long accountId
     ){
-        return null;
+        Store found = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreExceptionDetails.STORE_NOT_FOUND));
+        Optional<Like> foundLike = likeRepository.findByAccount_IdAndStore_Id(accountId,storeId);
+        return StoreDetailDTO.from(found, foundLike.isEmpty());
     }
 
     //음식점 id로 메뉴를 조회
