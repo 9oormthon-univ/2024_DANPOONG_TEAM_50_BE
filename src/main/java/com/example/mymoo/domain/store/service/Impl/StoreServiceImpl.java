@@ -105,7 +105,25 @@ public class StoreServiceImpl implements StoreService {
             final Long storeId,
             final Long accountId
     ){
-        return null;
+        Optional<Like> foundLike = likeRepository.findByAccount_IdAndStore_Id(accountId,storeId);
+        if (foundLike.isPresent()){
+            Like like = foundLike.get();
+            Store store = like.getStore();
+            store.decrementLikeCount();
+            storeRepository.save(store);
+            likeRepository.delete(like);
+            return "likeCount--";
+        }else{
+            Store foundStore = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreExceptionDetails.STORE_NOT_FOUND));
+            Account foundAccount = accountRepository.findById(accountId).orElseThrow(() -> new AccountException(AccountExceptionDetails.ACCOUNT_NOT_FOUND));
+            foundStore.incrementLikeCount();
+            likeRepository.save(
+                    Like.builder()
+                            .account(foundAccount)
+                            .store(foundStore)
+                            .build());
+            return "likeCount++";
+        }
     }
 
 }
