@@ -44,7 +44,19 @@ public class StoreServiceImpl implements StoreService {
             final int size,
             final Long accountId
     ){
-        return null;
+        List<Store> foundStores = storeRepository.findAll();
+        Map<Integer, Store> storeMap = new HashMap<>();
+        for(Store store : foundStores){
+            storeMap.put(StoreUtil.calculateDistance(logt, lat, store.getLongitude(), store.getLatitude()), store);
+        }
+        List<Integer> storeList = new ArrayList<>(storeMap.keySet());
+        storeList.sort(Comparator.naturalOrder());
+        List<Store> selectedStores = new ArrayList<>();
+        for (int i=page*size ; i<page*size+size ;i++) {
+            selectedStores.add(storeMap.get(storeList.get(i)));
+        }
+        List<Like> likes = likeRepository.findAllByAccount_Id(accountId);
+        return StoreListDTO.from(selectedStores, likes, page, size, false);
     }
 
     //keyword 를 포함하는 음식점명, 주소를 가진 음식점을 조회
@@ -53,7 +65,10 @@ public class StoreServiceImpl implements StoreService {
             final Pageable pageable,
             final Long accountId
     ){
-        return null;
+        Slice<Store> storesFindByKeyword = storeRepository.findAllByNameContainsOrAddressContains(keyword, keyword, pageable);
+        List<Store> selectedStores = storesFindByKeyword.stream().toList();
+        List<Like> likes = likeRepository.findAllByAccount_Id(accountId);
+        return StoreListDTO.from(selectedStores, likes, pageable.getPageNumber(), pageable.getPageSize(), storesFindByKeyword.hasNext());
     }
 
     //모든 음식점을 조회
@@ -61,7 +76,9 @@ public class StoreServiceImpl implements StoreService {
             final Pageable pageable,
             final Long accountId
     ){
-        return null;
+        Slice<Store> stores = storeRepository.findAll(pageable);
+        List<Like> likes = likeRepository.findAllByAccount_Id(accountId);
+        return StoreListDTO.from(stores.getContent(), likes, stores.getNumber(), stores.getSize(), stores.hasNext());
     }
 
     //음식점 id로 음식점을 조회
