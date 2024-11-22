@@ -95,7 +95,9 @@ public class StoreServiceImpl implements StoreService {
     public MenuListDTO getMenusByStoreId(
             final Long id
     ){
-        return null;
+        Store found = storeRepository.findById(id).orElseThrow(() -> new StoreException(StoreExceptionDetails.STORE_NOT_FOUND));
+        List<Menu> foundMenus = found.getMenus();
+        return MenuListDTO.from(foundMenus);
     }
 
     //음식점 좋아요 수정
