@@ -22,6 +22,18 @@ public class ChildServiceImpl implements ChildService {
     private final AccountRepository accountRepository;
 
     public Child createChild(ChildReqeustDTO request){
-        return null;
+        Account foundAccount = accountRepository.findById(request.getAccountId())
+                .orElseThrow(()->new AccountException(AccountExceptionDetails.ACCOUNT_NOT_FOUND));
+
+        if (childRepository.existsByAccount_Id(request.getAccountId())){
+            throw new ChildException(ChildExceptionDetails.CHILD_ALREADY_EXISTS);
+        }
+        foundAccount.changeUserRoleTo(UserRole.CHILD);
+        return childRepository.save(
+                Child.builder()
+                        .account(foundAccount)
+                        .cardNumber(request.getCardNumber())
+                        .build()
+        );
     }
 }

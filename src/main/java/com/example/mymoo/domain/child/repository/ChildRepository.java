@@ -4,5 +4,5 @@ import com.example.mymoo.domain.child.entity.Child;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChildRepository extends JpaRepository<Child, Long> {
-
+    boolean existsByAccount_Id(Long accountId);
 }
