@@ -1,5 +1,7 @@
 package com.example.mymoo.global.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -8,6 +10,11 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@OpenAPIDefinition(
+        servers = {
+                @Server(url = "https://api.mymoo.site")
+        }
+)
 @Configuration
 public class SwaggerConfig {
     private static final String BEARER_TOKEN_PREFIX = "Bearer";
