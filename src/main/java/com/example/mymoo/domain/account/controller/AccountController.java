@@ -48,10 +48,12 @@ public class AccountController {
     ) {
         String role =  accountCreateRequestDto.userRole();
         AccountCreateResponseDto accountResponse = accountService.signup(accountCreateRequestDto);
-        if(role.equals("CHILD") && accountCreateRequestDto.cardNumber() != null){
-            childService.createChild(accountResponse.accountId(), accountCreateRequestDto.cardNumber());
-        }else{
-            throw new ChildException(ChildExceptionDetails.CARD_NUMBER_BLANK);
+        if(role.equals("CHILD")){
+            if(accountCreateRequestDto.cardNumber() == null){
+                throw new ChildException(ChildExceptionDetails.CARD_NUMBER_BLANK);
+            }else{
+                childService.createChild(accountResponse.accountId(), accountCreateRequestDto.cardNumber());
+            }
         }
         return ResponseEntity
                 .status(CREATED)
