@@ -20,6 +20,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -56,29 +57,22 @@ public class StoreServiceImpl implements StoreService {
             selectedStores.add(storeMap.get(storeList.get(i)));
         }
         List<Like> likes = likeRepository.findAllByAccount_Id(accountId);
-        return StoreListDTO.from(selectedStores, likes, page, size, false);
+        return StoreListDTO.from(selectedStores, likes, page, size, false, logt, lat);
     }
 
     //keyword 를 포함하는 음식점명, 주소를 가진 음식점을 조회
     public StoreListDTO getAllStoresByKeyword(
             final String keyword,
             final Pageable pageable,
-            final Long accountId
+            final Long accountId,
+            final Double logt,
+            final Double lat
     ){
-        Slice<Store> storesFindByKeyword = storeRepository.findAllByNameContainsOrAddressContains(keyword, keyword, pageable);
-        List<Store> selectedStores = storesFindByKeyword.stream().toList();
+        Slice<Store> storesFoundByKeyword = storeRepository.findAllByNameContainsOrAddressContains(keyword, keyword, pageable);
+        List<Store> selectedStores = storesFoundByKeyword.stream().toList();
         List<Like> likes = likeRepository.findAllByAccount_Id(accountId);
-        return StoreListDTO.from(selectedStores, likes, pageable.getPageNumber(), pageable.getPageSize(), storesFindByKeyword.hasNext());
-    }
-
-    //모든 음식점을 조회
-    public StoreListDTO getAllStores(
-            final Pageable pageable,
-            final Long accountId
-    ){
-        Slice<Store> stores = storeRepository.findAll(pageable);
-        List<Like> likes = likeRepository.findAllByAccount_Id(accountId);
-        return StoreListDTO.from(stores.getContent(), likes, stores.getNumber(), stores.getSize(), stores.hasNext());
+        return StoreListDTO.from(selectedStores,
+                likes, pageable.getPageNumber(), pageable.getPageSize(), storesFoundByKeyword.hasNext(), logt, lat);
     }
 
     //음식점 id로 음식점을 조회

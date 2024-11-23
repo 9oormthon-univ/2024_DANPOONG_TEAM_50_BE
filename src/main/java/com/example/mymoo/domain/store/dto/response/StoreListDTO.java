@@ -2,6 +2,7 @@ package com.example.mymoo.domain.store.dto.response;
 
 import com.example.mymoo.domain.store.entity.Like;
 import com.example.mymoo.domain.store.entity.Store;
+import com.example.mymoo.domain.store.util.StoreUtil;
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,14 +21,16 @@ public class StoreListDTO {
             final List<Like> likes,
             final int page,
             final int size,
-            final boolean hasMore
+            final boolean hasMore,
+            final Double logt,
+            final Double lat
     ) {
         StoreListDTO result =  StoreListDTO.builder()
                 .totalCount(stores.size())
                 .page(page)
                 .size(size)
                 .hasMore(hasMore)
-                .stores(stores.stream().map(StoreListElement::from).toList())
+                .stores(stores.stream().map(store -> StoreListElement.from(store, logt, lat)).toList())
                 .build();
         result.updateLikeable(likes);
         return result;
@@ -58,9 +61,12 @@ public class StoreListDTO {
         private double longitude;
         private double latitude;
         private boolean likeable;
+        private Integer distance;
 
         public static StoreListElement from(
-                final Store store
+                final Store store,
+                final Double logt,
+                final Double lat
         ) {
             return StoreListElement.builder()
                     .storeId(store.getId())
@@ -71,6 +77,7 @@ public class StoreListDTO {
                     .usableDonation(store.getUsableDonation())
                     .longitude(store.getLongitude())
                     .latitude(store.getLatitude())
+                    .distance(StoreUtil.calculateDistance(logt, lat, store.getLongitude(), store.getLatitude()))
                     .build();
         }
 
@@ -88,7 +95,8 @@ public class StoreListDTO {
                 final int reviewCount,
                 final Long usableDonation,
                 final double longitude,
-                final double latitude
+                final double latitude,
+                final Integer distance
         ) {
             this.storeId = storeId;
             this.name = name;
@@ -99,6 +107,7 @@ public class StoreListDTO {
             this.usableDonation = usableDonation;
             this.longitude = longitude;
             this.latitude = latitude;
+            this.distance = distance;
             this.likeable = true;
         }
     }
