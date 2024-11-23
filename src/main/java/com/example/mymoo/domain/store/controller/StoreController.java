@@ -31,7 +31,7 @@ public class StoreController {
     @GetMapping("")
     @Operation(
             summary = "[공통]음식점 전체 조회",
-            description = "가게를 검색하여 조회하는 api 입니다. logt(경도), lat(위도) 를 보내면 현재 위치기반, keyword 를 보내면 keyword 기반검색, 아무것도 보내지 않으면 모든 상점을 조회합니다. *likeable 은 좋아요를 누를 수 있는지 없는지 입니다.",
+            description = "가게를 검색하여 조회하는 api 입니다. logt(경도), lat(위도) 를 보내면 현재 위치기반, keyword 를 보내면 keyword 기반검색, 아무것도 보내지 않으면 모든 상점을 조회합니다. *likeable 은 좋아요를 누를 수 있는지 없는지 입니다. *distance는 (m) 단위입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "조회 성공"),
             }
@@ -40,33 +40,23 @@ public class StoreController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Parameter(description = "page 의 순서를 의미합니다.") @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @Parameter(description = "page 의 크기를 의미합니다.") @RequestParam(value = "size", required = false, defaultValue = "10") int size,
-            @Parameter(description = "정렬 기준입니다. 오름차순: asc 내림차순: desc") @RequestParam(value = "sort", required = false, defaultValue = "asc") String sort,
-            @Parameter(description = "정렬할 대상입니다. 가게명: name, 주소: address") @RequestParam(value = "sortby", required = false, defaultValue = "name") String sortby,
+            @Parameter(description = "정렬 기준입니다. 좋아요 많은 순: likeCount, 후원금액 높은 순: usableDonation, 리뷰 많은 순: reviewCount") @RequestParam(value = "sortby", required = false, defaultValue = "likeCount") String sortby,
             @Parameter(description = "검색할 keyword를 의미합니다.") @RequestParam(value = "keyword", required = false) String keyword,
             @Parameter(description = "현재위치의 경도를 의미합니다.") @RequestParam(value = "logt", required = false) Double logt,
             @Parameter(description = "현재위치의 위도를 의미합니다.")  @RequestParam(value = "lat", required = false) Double lat
     ){
         Long accountId = userDetails.getAccountId();
-        System.out.println(accountId);
         if (logt != null && lat != null) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(storeService.getAllStoresByLocation(logt, lat, page, size, accountId));
-        }else if(keyword != null){
-            if (sort.equals("desc")){
+            if(keyword == null){
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(storeService.getAllStoresByLocation(logt, lat, page, size, accountId));
+            }else{
                 Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, sortby);
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(storeService.getAllStoresByKeyword(keyword, pageable, accountId));
-            }else if(sort.equals("asc")){
-                Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, sortby);
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(storeService.getAllStoresByKeyword(keyword, pageable, accountId));
-            }else{
-                throw new StoreException(StoreExceptionDetails.QUERY_PARAMETER_INVALID);
+                        .body(storeService.getAllStoresByKeyword(keyword, pageable, accountId, logt, lat));
             }
         }else{
-            Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, sortby);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(storeService.getAllStores(pageable, accountId));
+            throw new StoreException(StoreExceptionDetails.QUERY_PARAMETER_INVALID);
         }
     }
 

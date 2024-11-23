@@ -18,11 +18,9 @@ public interface StoreService {
     StoreListDTO getAllStoresByKeyword(
             final String keyword,
             final Pageable pageable,
-            final Long accountId
-    );
-    StoreListDTO getAllStores(
-            final Pageable pageable,
-            final Long accountId
+            final Long accountId,
+            final Double logt,
+            final Double lat
     );
     StoreDetailDTO getStoreById(
             final Long storeid,

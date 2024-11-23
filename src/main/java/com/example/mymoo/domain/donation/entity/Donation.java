@@ -3,6 +3,7 @@ package com.example.mymoo.domain.donation.entity;
 import com.example.mymoo.domain.account.entity.Account;
 import com.example.mymoo.domain.donation.exception.DonationException;
 import com.example.mymoo.domain.donation.exception.DonationExceptionDetails;
+import com.example.mymoo.domain.store.entity.Store;
 import com.example.mymoo.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
