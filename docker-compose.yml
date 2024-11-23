@@ -1,0 +1,44 @@
+services:
+  mariadb:
+    image: mariadb:11.2.4
+    restart: always
+    container_name: mariadb
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    environment:
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    networks:
+      - mymoo-network
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
+      start_period: 1m
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  my-cache-server:
+    image: redis:6.2.6
+    hostname: my-cache-server
+    container_name: my-cache-server
+    ports:
+      - 6379:6379
+    networks:
+      - mymoo-network
+
+  my-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mymoo
+    ports:
+      - 8080:8080
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - mymoo-network
+
+networks:
+  mymoo-network:
