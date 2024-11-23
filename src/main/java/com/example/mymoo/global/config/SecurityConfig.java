@@ -63,15 +63,14 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(authorizeHttpRequests ->
             authorizeHttpRequests
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .requestMatchers("/api/v1/account/signup").permitAll()
+                .requestMatchers("/api/v1/accounts/signup").permitAll()
                 .requestMatchers("/api/v1/auth/login").permitAll()
+                .requestMatchers("/api/v1/children/signup").permitAll()
                 .requestMatchers("/api/v1/auth/token/refresh").permitAll()
                 .requestMatchers("/api/v1/oauth/**").permitAll()
                 .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/**").permitAll() // TODO - 수정
                 .anyRequest().authenticated() // 나머지 요청은 인증 필요
         );
-
 
         httpSecurity.addFilterBefore(
             jwtAuthorizationFilter(),
