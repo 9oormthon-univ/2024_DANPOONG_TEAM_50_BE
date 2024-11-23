@@ -1,4 +1,4 @@
-package com.example.mymoo.domain.child.dto.controller;
+package com.example.mymoo.domain.child.controller;
 
 
 import com.example.mymoo.domain.child.dto.request.ChildReqeustDTO;
