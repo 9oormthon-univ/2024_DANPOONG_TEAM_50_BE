@@ -15,6 +15,8 @@ import com.example.mymoo.domain.donationusage.exception.DonationUsageExceptionDe
 import com.example.mymoo.domain.donationusage.repository.DonationUsageRepository;
 import com.example.mymoo.domain.donationusage.service.DonationUsageService;
 import com.example.mymoo.domain.store.entity.Store;
+import com.example.mymoo.domain.store.repository.StoreRepository;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ public class DonationUsageServiceImpl implements DonationUsageService {
     private final DonationRepository donationRepository;
     private final ChildRepository childRepository;
     private final DonationUsageRepository donationUsageRepository;
+    private final StoreRepository storeRepository;
 
     @Override
     public void useDonation(
@@ -37,21 +40,26 @@ public class DonationUsageServiceImpl implements DonationUsageService {
         final DonationUsageCreateRequestDto donationUsageCreateRequestDto
     ) {
         Donation donation = donationRepository.findById(donationUsageCreateRequestDto.donationId())
-                .orElseThrow(() -> new DonationException(DonationExceptionDetails.DONATION_NOT_FOUND));
+            .orElseThrow(() -> new DonationException(DonationExceptionDetails.DONATION_NOT_FOUND));
         Child child = childRepository.findByAccount_Id(donationUsageCreateRequestDto.childAccountId())
-                .orElseThrow(() -> new ChildException(ChildExceptionDetails.CHILD_NOT_FOUND));
-        Store store = donation.getStore();
-        // 자신의 가게가 아닌 다른 가게의 후원을 사용하려 할 때
-        if (!Objects.equals(store.getAccount().getId(), storeAccountId)){
+            .orElseThrow(() -> new ChildException(ChildExceptionDetails.CHILD_NOT_FOUND));
+
+        Store storeUsingDonation = donation.getStore();
+        // 해당 가게 계정이 가진 store 들의 id들 뽑기
+        List<Store> storesOwns = storeRepository.findAllByAccount_Id(storeAccountId);
+        Long storeUsingDonationId = storeUsingDonation.getId();
+        boolean hasMatchingStore = storesOwns.stream()
+            .anyMatch(store -> store.getId().equals(storeUsingDonationId));
+        if (!hasMatchingStore){
             throw new DonationUsageException(DonationUsageExceptionDetails.FORBIDDEN_ACCESS_TO_OTHER_STORE);
         }
 
         // 사용 여부 업데이트
         donation.setIsUsedToTrue();
         // 사용 가능한 후원 금액 감소
-        store.useUsableDonation(donation.getPoint());
+        storeUsingDonation.useUsableDonation(donation.getPoint());
         // store 계정의 point 증가. 향후 현금으로 바꿀 수 있음
-        store.getAccount().chargePoint(donation.getPoint());
+        storeUsingDonation.getAccount().chargePoint(donation.getPoint());
 
         donationUsageRepository.save(
             DonationUsage.builder()
