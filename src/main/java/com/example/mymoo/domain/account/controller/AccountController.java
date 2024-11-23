@@ -8,6 +8,9 @@ import com.example.mymoo.domain.account.dto.response.AccountCreateResponseDto;
 import com.example.mymoo.domain.account.dto.response.ChargePointsResponseDto;
 import com.example.mymoo.domain.account.dto.response.ReadAccountResponseDto;
 import com.example.mymoo.domain.account.service.AccountService;
+import com.example.mymoo.domain.child.exception.ChildException;
+import com.example.mymoo.domain.child.exception.ChildExceptionDetails;
+import com.example.mymoo.domain.child.service.ChildService;
 import com.example.mymoo.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,10 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
 
     private final AccountService accountService;
+    private final ChildService childService;
 
     @Operation(
         summary = "[공통] 사용자 계정 생성",
-        description = "새로운 사용자 계정을 생성합니다.",
+        description = "새로운 사용자 계정을 생성합니다. 카드번호는 16개입니다. 일반회원인 경우 0 16개를 보내주세요.",
         responses = {
             @ApiResponse(responseCode = "201", description = "계정 생성 성공"),
         }
@@ -42,9 +46,16 @@ public class AccountController {
     public ResponseEntity<AccountCreateResponseDto> signup(
         @Valid @RequestBody AccountCreateRequestDto accountCreateRequestDto
     ) {
+        String role =  accountCreateRequestDto.userRole();
+        AccountCreateResponseDto accountResponse = accountService.signup(accountCreateRequestDto);
+        if(role.equals("CHILD") && accountCreateRequestDto.cardNumber() != null){
+            childService.createChild(accountResponse.accountId(), accountCreateRequestDto.cardNumber());
+        }else{
+            throw new ChildException(ChildExceptionDetails.CARD_NUMBER_BLANK);
+        }
         return ResponseEntity
-            .status(CREATED)
-            .body(accountService.signup(accountCreateRequestDto));
+                .status(CREATED)
+                .body(accountResponse);
     }
 
     @Operation(
