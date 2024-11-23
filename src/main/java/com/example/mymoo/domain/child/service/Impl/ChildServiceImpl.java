@@ -21,18 +21,18 @@ public class ChildServiceImpl implements ChildService {
     private final ChildRepository childRepository;
     private final AccountRepository accountRepository;
 
-    public Child createChild(ChildReqeustDTO request){
-        Account foundAccount = accountRepository.findById(request.getAccountId())
+    public Child createChild(Long accountId, String cardNumber){
+        Account foundAccount = accountRepository.findById(accountId)
                 .orElseThrow(()->new AccountException(AccountExceptionDetails.ACCOUNT_NOT_FOUND));
 
-        if (childRepository.existsByAccount_Id(request.getAccountId())){
+        if (childRepository.existsByAccount_Id(accountId)){
             throw new ChildException(ChildExceptionDetails.CHILD_ALREADY_EXISTS);
         }
         foundAccount.changeUserRoleTo(UserRole.CHILD);
         return childRepository.save(
                 Child.builder()
                         .account(foundAccount)
-                        .cardNumber(request.getCardNumber())
+                        .cardNumber(cardNumber)
                         .build()
         );
     }

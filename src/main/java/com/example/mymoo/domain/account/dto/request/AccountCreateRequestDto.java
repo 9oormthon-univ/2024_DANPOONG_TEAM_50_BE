@@ -39,7 +39,11 @@ public record AccountCreateRequestDto(
         message = "DONATOR, CHILD, STORE, ADMIN 중 하나를 입력해주세요"
     )
     @Schema(description = "사용자의 역할 (DONATOR, CHILD, STORE, ADMIN 중 하나)", example = "DONATOR")
-    String userRole
+    String userRole,
+
+    @NotBlank(message = "카드번호는 필수 항목입니다")
+    @Pattern(regexp = "^\\d{16}$", message = "카드 번호는 16자리 숫자여야 합니다.")
+            String cardNumber
 ) {
 
 }
