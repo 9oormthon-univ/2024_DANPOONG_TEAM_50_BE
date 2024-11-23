@@ -61,19 +61,15 @@ jobs:
       # 0. 최신 이미지를 풀받습니다
       - name: docker pull
         run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/mymoo
-    
-      # 1. mymoo 폴더로 이동
-      - name: cd to mymoo
-        run: cd /home/ubuntu/mymoo
-      
-      # 2. docker-compose 종료
+
+      # 1. docker-compose 종료
       - name: docker-compose down
         run: sudo docker-compose down
 
-      # 3. docker-compose 실행
+      # 2. docker-compose 실행
       - name: docker-compose up
         run: sudo docker-compose up -d 
 
-      # 4. 안쓰는 이미지 제거
+      # 3. 안쓰는 이미지 제거
       - name: Remove unused Docker images
         run: sudo docker image prune -f
