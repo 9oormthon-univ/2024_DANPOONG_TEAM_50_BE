@@ -16,6 +16,7 @@ import com.example.mymoo.domain.store.repository.LikeRepository;
 import com.example.mymoo.domain.store.repository.StoreRepository;
 import com.example.mymoo.domain.store.service.StoreService;
 import com.example.mymoo.domain.store.util.StoreUtil;
+import com.example.mymoo.global.aop.LogExecutionTime;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -27,7 +28,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Service @Transactional
+@Service
+@Transactional @LogExecutionTime
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
