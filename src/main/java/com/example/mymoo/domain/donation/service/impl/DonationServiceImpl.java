@@ -24,6 +24,7 @@ import com.example.mymoo.domain.store.repository.StoreRepository;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.example.mymoo.global.aop.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -31,7 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional @LogExecutionTime
 @RequiredArgsConstructor
 public class DonationServiceImpl implements DonationService {
 

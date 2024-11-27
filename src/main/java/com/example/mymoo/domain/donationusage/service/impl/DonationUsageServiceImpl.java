@@ -18,6 +18,8 @@ import com.example.mymoo.domain.store.entity.Store;
 import com.example.mymoo.domain.store.repository.StoreRepository;
 import java.util.List;
 import java.util.Objects;
+
+import com.example.mymoo.global.aop.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-@Transactional
+@Transactional @LogExecutionTime
 @RequiredArgsConstructor
 public class DonationUsageServiceImpl implements DonationUsageService {
 

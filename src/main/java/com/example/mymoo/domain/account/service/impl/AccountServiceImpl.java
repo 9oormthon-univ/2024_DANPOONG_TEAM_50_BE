@@ -10,6 +10,7 @@ import com.example.mymoo.domain.account.exception.AccountException;
 import com.example.mymoo.domain.account.exception.AccountExceptionDetails;
 import com.example.mymoo.domain.account.repository.AccountRepository;
 import com.example.mymoo.domain.account.service.AccountService;
+import com.example.mymoo.global.aop.LogExecutionTime;
 import com.example.mymoo.global.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional @LogExecutionTime
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
