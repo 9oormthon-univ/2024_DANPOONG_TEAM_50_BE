@@ -11,6 +11,7 @@ public class StoreDetailDTO {
     private String name;
     private String address;
     private String imagePath;
+    private Double stars;
     private Integer likeCount;
     private Long allDonation;
     private Long usableDonation;
@@ -22,6 +23,7 @@ public class StoreDetailDTO {
                 .name(store.getName())
                 .address(store.getAddress())
                 .imagePath(store.getImagePath())
+                .stars(store.getStars())
                 .likeCount(store.getLikeCount())
                 .allDonation(store.getAllDonation())
                 .usableDonation(store.getUsableDonation())
