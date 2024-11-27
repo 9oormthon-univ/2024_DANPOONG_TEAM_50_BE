@@ -38,7 +38,10 @@ public interface StoreService {
             final Long accountId
     );
     StoreListDTO getAllStoresBookMarked(
-            final Long accountId
+            final Long accountId,
+            final Pageable pageable,
+            final Double logt,
+            final Double lat
     );
 
 }

@@ -7,11 +7,13 @@ import com.example.mymoo.domain.account.repository.AccountRepository;
 import com.example.mymoo.domain.store.dto.response.MenuListDTO;
 import com.example.mymoo.domain.store.dto.response.StoreDetailDTO;
 import com.example.mymoo.domain.store.dto.response.StoreListDTO;
+import com.example.mymoo.domain.store.entity.BookMark;
 import com.example.mymoo.domain.store.entity.Like;
 import com.example.mymoo.domain.store.entity.Menu;
 import com.example.mymoo.domain.store.entity.Store;
 import com.example.mymoo.domain.store.exception.StoreException;
 import com.example.mymoo.domain.store.exception.StoreExceptionDetails;
+import com.example.mymoo.domain.store.repository.BookMarkRepository;
 import com.example.mymoo.domain.store.repository.LikeRepository;
 import com.example.mymoo.domain.store.repository.StoreRepository;
 import com.example.mymoo.domain.store.service.StoreService;
@@ -35,6 +37,7 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final LikeRepository likeRepository;
+    private final BookMarkRepository bookMarkRepository;
     private final AccountRepository accountRepository;
 
 
@@ -49,16 +52,17 @@ public class StoreServiceImpl implements StoreService {
         List<Store> foundStores = storeRepository.findAll();
         Map<Integer, Store> storeMap = new HashMap<>();
         for(Store store : foundStores){
+            // 현재 위치로부터 위치를 key store 를 value 로 저장
             storeMap.put(StoreUtil.calculateDistance(logt, lat, store.getLongitude(), store.getLatitude()), store);
         }
-        List<Integer> storeList = new ArrayList<>(storeMap.keySet());
+        List<Integer> storeList = new ArrayList<>(storeMap.keySet()); // map 에서 keyset 을 뽑아와서 정렬
         storeList.sort(Comparator.naturalOrder());
         List<Store> selectedStores = new ArrayList<>();
         for (int i=page*size ; i<page*size+size ;i++) {
-            selectedStores.add(storeMap.get(storeList.get(i)));
+            selectedStores.add(storeMap.get(storeList.get(i))); // 정렬된 순서대로 map 의 value 를 삽입
         }
         List<Like> likes = likeRepository.findAllByAccount_Id(accountId);
-        return StoreListDTO.from(selectedStores, likes, page, size, false, logt, lat);
+        return StoreListDTO.from(foundStores.size(), selectedStores, likes, page, size, false, logt, lat);
     }
 
     //keyword 를 포함하는 음식점명, 주소를 가진 음식점을 조회
@@ -72,7 +76,7 @@ public class StoreServiceImpl implements StoreService {
         Slice<Store> storesFoundByKeyword = storeRepository.findAllByNameContainsOrAddressContains(keyword, keyword, pageable);
         List<Store> selectedStores = storesFoundByKeyword.stream().toList();
         List<Like> likes = likeRepository.findAllByAccount_Id(accountId);
-        return StoreListDTO.from(selectedStores,
+        return StoreListDTO.from(storesFoundByKeyword.getNumberOfElements(), selectedStores,
                 likes, pageable.getPageNumber(), pageable.getPageSize(), storesFoundByKeyword.hasNext(), logt, lat);
     }
 
@@ -125,12 +129,36 @@ public class StoreServiceImpl implements StoreService {
             final Long storeId,
             final Long accountId
     ) {
-        return null;
+        Optional<BookMark> foundBookMark = bookMarkRepository.findByAccount_IdAndStore_Id(accountId, storeId);
+        if(foundBookMark.isPresent()){
+            bookMarkRepository.delete(foundBookMark.get());
+            return "BookMark Removed";
+        }else{
+            Store foundStore = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreExceptionDetails.STORE_NOT_FOUND));
+            Account foundAccount = accountRepository.findById(accountId).orElseThrow(() -> new AccountException(AccountExceptionDetails.ACCOUNT_NOT_FOUND));
+            bookMarkRepository.save(
+                    BookMark.builder()
+                            .account(foundAccount)
+                            .store(foundStore)
+                            .build());
+            return "BookMark Added";
+        }
     }
 
     public StoreListDTO getAllStoresBookMarked(
-            final Long accountId
+            final Long accountId,
+            final Pageable pageable,
+            final Double logt,
+            final Double lat
     ){
-        return null;
+
+        Slice<BookMark> foundBookMark = bookMarkRepository.findAllByAccount_Id(accountId, pageable);
+        List<Like> likes = likeRepository.findAllByAccount_Id(accountId);
+        List<Store> stores = foundBookMark.stream()
+                .map(BookMark::getStore)
+                .toList();
+
+        return StoreListDTO.from(foundBookMark.getNumberOfElements(), stores,
+                likes, pageable.getPageNumber(), pageable.getPageSize(), foundBookMark.hasNext(), logt, lat);
     }
 }
