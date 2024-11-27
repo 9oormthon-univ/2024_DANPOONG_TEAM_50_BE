@@ -17,6 +17,7 @@ public class StoreListDTO {
     private List<StoreListElement> stores;
 
     public static StoreListDTO from(
+            final long totalCount,
             final List<Store> stores,
             final List<Like> likes,
             final int page,
@@ -26,7 +27,7 @@ public class StoreListDTO {
             final Double lat
     ) {
         StoreListDTO result =  StoreListDTO.builder()
-                .totalCount(stores.size())
+                .totalCount(totalCount)
                 .page(page)
                 .size(size)
                 .hasMore(hasMore)
