@@ -33,4 +33,12 @@ public interface StoreService {
             final Long storeId,
             final Long accountId
     );
+    String updateStoreBookMark(
+            final Long storeId,
+            final Long accountId
+    );
+    StoreListDTO getAllStoresBookMarked(
+            final Long accountId
+    );
+
 }

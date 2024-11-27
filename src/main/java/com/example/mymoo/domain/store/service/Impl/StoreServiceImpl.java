@@ -35,7 +35,6 @@ public class StoreServiceImpl implements StoreService {
     private final LikeRepository likeRepository;
     private final AccountRepository accountRepository;
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     // 위치기반으로 음식점을 조회
     public StoreListDTO getAllStoresByLocation(
@@ -120,4 +119,16 @@ public class StoreServiceImpl implements StoreService {
         }
     }
 
+    public String updateStoreBookMark(
+            final Long storeId,
+            final Long accountId
+    ) {
+        return null;
+    }
+
+    public StoreListDTO getAllStoresBookMarked(
+            final Long accountId
+    ){
+        return null;
+    }
 }
