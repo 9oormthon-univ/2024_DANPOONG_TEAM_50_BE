@@ -2,10 +2,13 @@ package com.example.mymoo.domain.payment.controller;
 
 import com.example.mymoo.domain.payment.dto.api.KakaoPayReadyResponse;
 import com.example.mymoo.domain.payment.dto.request.PayRequestDTO;
+import com.example.mymoo.domain.payment.dto.response.PayResponseDTO;
 import com.example.mymoo.domain.payment.service.PaymentService;
+import com.example.mymoo.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,17 +20,23 @@ public class PaymentController {
 
     @PostMapping("ready")
     public ResponseEntity<KakaoPayReadyResponse> payReady(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody PayRequestDTO req
     ){
-        KakaoPayReadyResponse res = paymentService.payReady(req.getName(), req.getTotalPrice());
+        KakaoPayReadyResponse res = paymentService.payReady(req.getName(), req.getTotalPrice(), userDetails.getAccountId());
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
     }
 
     @GetMapping("approve")
-    public String approve() {
+    public ResponseEntity<PayResponseDTO> approve(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam("pg_token") String pgToken,
+            @RequestParam("tid") String tid
+    ) {
         //승인 처리 - 이 부분은 프론트에서 1차적으로 리다이렉트
-        // 프론트에서 받은 결제 정보를 해당 api에 넘겨주면 서버에 반영됨
-        return "approve";
+        // 프론트에서 받은 결제 정보(pg_token)를 해당 api에 넘겨주면 서버에 반영됨
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(paymentService.approve(pgToken, tid, userDetails.getAccountId()));
     }
 
     @GetMapping("cancel")
