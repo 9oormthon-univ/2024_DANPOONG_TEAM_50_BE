@@ -10,12 +10,14 @@ import com.example.mymoo.domain.child.exception.ChildException;
 import com.example.mymoo.domain.child.exception.ChildExceptionDetails;
 import com.example.mymoo.domain.child.repository.ChildRepository;
 import com.example.mymoo.domain.child.service.ChildService;
+import com.example.mymoo.global.aop.LogExecutionTime;
 import com.example.mymoo.global.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service @Transactional
+@Service
+@Transactional @LogExecutionTime
 @RequiredArgsConstructor
 public class ChildServiceImpl implements ChildService {
     private final ChildRepository childRepository;
