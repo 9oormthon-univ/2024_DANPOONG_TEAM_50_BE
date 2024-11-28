@@ -5,6 +5,7 @@ import com.example.mymoo.domain.account.exception.AccountException;
 import com.example.mymoo.domain.account.exception.AccountExceptionDetails;
 import com.example.mymoo.domain.account.repository.AccountRepository;
 import com.example.mymoo.domain.donation.dto.request.DonationRequestDto;
+import com.example.mymoo.domain.donation.dto.response.DonationResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadAccountDonationListResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadDonationResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadStoreDonationListResponseDto;
@@ -42,7 +43,7 @@ public class DonationServiceImpl implements DonationService {
     private final DonationUsageRepository donationUsageRepository;
 
     @Override
-    public void createDonation(
+    public DonationResponseDto createDonation(
         final Long accountId,
         final Long storeId,
         final DonationRequestDto donationRequestDto
@@ -66,6 +67,10 @@ public class DonationServiceImpl implements DonationService {
                 .isUsed(false)
                 .build()
         );
+
+        return DonationResponseDto.builder()
+            .donator(account.getNickname())
+            .build();
     }
 
     @Override
