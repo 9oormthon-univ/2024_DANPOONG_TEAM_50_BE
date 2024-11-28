@@ -9,6 +9,7 @@ import com.example.mymoo.domain.donation.exception.DonationException;
 import com.example.mymoo.domain.donation.exception.DonationExceptionDetails;
 import com.example.mymoo.domain.donation.repository.DonationRepository;
 import com.example.mymoo.domain.donationusage.dto.request.DonationUsageCreateRequestDto;
+import com.example.mymoo.domain.donationusage.dto.request.DonationUsageUpdateMessageRequestDto;
 import com.example.mymoo.domain.donationusage.entity.DonationUsage;
 import com.example.mymoo.domain.donationusage.exception.DonationUsageException;
 import com.example.mymoo.domain.donationusage.exception.DonationUsageExceptionDetails;
@@ -69,5 +70,22 @@ public class DonationUsageServiceImpl implements DonationUsageService {
                 .donation(donation)
                 .build()
         );
+    }
+
+    @Override
+    public void updateMessage(
+        final Long childAccountId,
+        final DonationUsageUpdateMessageRequestDto donationUsageUpdateMessageRequestDto
+    ) {
+        DonationUsage donationUsage = donationUsageRepository.findByDonation_id(donationUsageUpdateMessageRequestDto.donationId())
+            .orElseThrow(() -> new DonationUsageException(DonationUsageExceptionDetails.DONATION_USAGE_NOT_FOUND));
+
+        // 자신이 사용하지 않은 후원에 대해 감사 메시지 작성하려 할 때
+        if (!Objects.equals(donationUsage.getChild().getAccount().getId(), childAccountId)){
+            throw new DonationUsageException(DonationUsageExceptionDetails.FORBIDDEN_TO_WRITE_MESSAGE_TO_OTHER_DONATION);
+        }
+
+        // 메시지 업데이트
+        donationUsage.setMessage(donationUsageUpdateMessageRequestDto.message());
     }
 }

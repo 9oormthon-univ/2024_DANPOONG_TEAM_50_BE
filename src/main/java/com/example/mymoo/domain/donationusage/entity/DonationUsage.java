@@ -2,6 +2,8 @@ package com.example.mymoo.domain.donationusage.entity;
 
 import com.example.mymoo.domain.child.entity.Child;
 import com.example.mymoo.domain.donation.entity.Donation;
+import com.example.mymoo.domain.donation.exception.DonationException;
+import com.example.mymoo.domain.donation.exception.DonationExceptionDetails;
 import com.example.mymoo.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,5 +56,12 @@ public class DonationUsage extends BaseEntity {
         this.message = message;
         this.donation = donation;
         this.child = child;
+    }
+
+    public void setMessage(String message) {
+        if (message.isEmpty() || message.length() > 255) {
+            throw new IllegalArgumentException("message는 최소 1자 최대 255자여야 합니다.");
+        }
+        this.message = message;
     }
 }

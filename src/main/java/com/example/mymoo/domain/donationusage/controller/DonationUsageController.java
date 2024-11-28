@@ -1,6 +1,7 @@
 package com.example.mymoo.domain.donationusage.controller;
 
 import com.example.mymoo.domain.donationusage.dto.request.DonationUsageCreateRequestDto;
+import com.example.mymoo.domain.donationusage.dto.request.DonationUsageUpdateMessageRequestDto;
 import com.example.mymoo.domain.donationusage.service.DonationUsageService;
 import com.example.mymoo.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +42,26 @@ public class DonationUsageController {
         // TODO - 알림 기능 추가
         return ResponseEntity
             .status(HttpStatus.CREATED)
+            .build();
+    }
+
+    @Operation(
+        summary = "[아동] 감사의 말 작성",
+        description = "QR 코드 인식 후 아동 계정에서 감사 메시지 작성 시 해당 API를 호출합니다.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "작성 성공"),
+        }
+    )
+    @PatchMapping("/")
+    @PreAuthorize("hasAuthority('CHILD')")
+    public ResponseEntity<Void> updateMessage(
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @Valid @RequestBody DonationUsageUpdateMessageRequestDto donationUsageUpdateMessageRequestDto
+    ){
+        Long childAccountId = userDetails.getAccountId();
+        donationUsageService.updateMessage(childAccountId, donationUsageUpdateMessageRequestDto);
+        return ResponseEntity
+            .status(HttpStatus.OK)
             .build();
     }
 }
