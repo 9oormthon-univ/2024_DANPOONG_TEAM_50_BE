@@ -38,6 +38,9 @@ public class Child extends BaseEntity {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
+    @OneToOne(fetch = FetchType.LAZY, optional = false, mappedBy = "child")
+    private Location location;
+
     @Builder
     public Child(
         final String cardNumber,
