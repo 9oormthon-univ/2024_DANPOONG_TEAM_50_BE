@@ -100,13 +100,53 @@ public class StoreController {
     )
     public ResponseEntity<StoreResponseDTO> updateStoreLikeCount(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Parameter(description = "가게의 id값 입니다.") @PathVariable("storeId") Long id
+            @Parameter(description = "가게의 id값 입니다.") @PathVariable("storeId") Long storeId
     ){
         Long accountId = userDetails.getAccountId();
-        String result = storeService.updateStoreLikeCount(id, accountId);
+        String result = storeService.updateStoreLikeCount(storeId, accountId);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new StoreResponseDTO(HttpStatus.NO_CONTENT, storeRepository.findById(id).get(), result)
+                StoreResponseDTO.from(HttpStatus.NO_CONTENT, storeRepository.findById(storeId).get(), result)
         );
     }
 
+    @PatchMapping("{storeId}")
+    @Operation(
+            summary = "[공통]찜한 가게 추가/제거",
+            description = "id 값으로 기준으로 특정 가게를 자신의 찜 목록에 추가하거나 제거합니다. 추가되어있다면 제거되고, 없었다면 추가됩니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "조회 성공"),
+            }
+    )
+    public ResponseEntity<StoreResponseDTO> updateStoreBookMark(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Parameter(description = "가게의 id값 입니다.") @PathVariable("storeId") Long storeId
+    ){
+        Long accountId = userDetails.getAccountId();
+        String result = storeService.updateStoreBookMark(storeId, accountId);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                StoreResponseDTO.from(HttpStatus.NO_CONTENT, storeRepository.findById(storeId).get(), result)
+        );
+    }
+
+    @GetMapping("bookmarks")
+    @Operation(
+            summary = "[공통]찜한 가게 조회",
+            description = "id 값으로 기준으로 특정 가게의 메뉴 조회하는 api 입니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "조회 성공"),
+            }
+    )
+    public ResponseEntity<StoreListDTO> getBookMarkedStores(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Parameter(description = "page 의 순서를 의미합니다.") @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @Parameter(description = "page 의 크기를 의미합니다.") @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+            @Parameter(description = "현재위치의 경도를 의미합니다.") @RequestParam(value = "logt", required = false) Double logt,
+            @Parameter(description = "현재위치의 위도를 의미합니다.")  @RequestParam(value = "lat", required = false) Double lat
+    ){
+        Long accountId = userDetails.getAccountId();
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                storeService.getAllStoresBookMarked(accountId, pageable, logt, lat)
+        );
+    }
 }
