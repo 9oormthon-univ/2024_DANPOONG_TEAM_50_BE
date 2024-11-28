@@ -1,6 +1,7 @@
 package com.example.mymoo.domain.donation.controller;
 
 import com.example.mymoo.domain.donation.dto.request.DonationRequestDto;
+import com.example.mymoo.domain.donation.dto.response.DonationResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadAccountDonationListResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadDonationResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadStoreDonationListResponseDto;
@@ -41,22 +42,22 @@ public class DonationController {
     )
     @PostMapping("/stores/{storeId}")
     @PreAuthorize("hasAuthority('DONATOR')")
-    public ResponseEntity<Void> donate(
+    public ResponseEntity<DonationResponseDto> donate(
         @AuthenticationPrincipal CustomUserDetails userDetails,
-        @PathVariable Long storeId,
+        @PathVariable("storeId") Long storeId,
         @Valid @RequestBody DonationRequestDto donationRequestDto
     ) {
         Long accountId = userDetails.getAccountId();
 
-        donationService.createDonation(
-            accountId,
-            storeId,
-            donationRequestDto
-        );
-
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .build();
+            .body(
+                donationService.createDonation(
+                    accountId,
+                    storeId,
+                    donationRequestDto
+                )
+            );
     }
 
     @Operation(
@@ -68,7 +69,7 @@ public class DonationController {
     )
     @GetMapping("/stores/{storeId}")
     public ResponseEntity<ReadStoreDonationListResponseDto> getStoreDonationList(
-        @PathVariable Long storeId,
+        @PathVariable("storeId") Long storeId,
         @PageableDefault(size = 10, sort = "createdAt", direction = Direction.ASC) @Parameter(hidden = true) Pageable pageable
     ) {
         return ResponseEntity
@@ -107,7 +108,7 @@ public class DonationController {
     @PreAuthorize("hasAuthority('DONATOR')")
     public ResponseEntity<ReadDonationResponseDto> getDonation(
         @AuthenticationPrincipal CustomUserDetails userDetails,
-        @PathVariable Long donationId
+        @PathVariable("donationId") Long donationId
     ) {
         Long accountId = userDetails.getAccountId();
         return ResponseEntity
