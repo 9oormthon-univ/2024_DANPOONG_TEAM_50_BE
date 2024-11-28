@@ -2,6 +2,7 @@ package com.example.mymoo.domain.donation.controller;
 
 import com.example.mymoo.domain.donation.dto.request.DonationRequestDto;
 import com.example.mymoo.domain.donation.dto.response.DonationResponseDto;
+import com.example.mymoo.domain.donation.dto.response.DonatorRankingResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadAccountDonationListResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadDonationResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadStoreDonationListResponseDto;
@@ -58,6 +59,25 @@ public class DonationController {
                     donationRequestDto
                 )
             );
+    }
+
+    @Operation(
+        summary = "[후원자] 자신의 후원 랭킹 및 전체 랭킹 조회",
+        description = "자신의 후원 랭킹, 다른 후원자들의 후원 랭킹을 조회합니다.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+        }
+    )
+    @GetMapping("/rankings")
+    @PreAuthorize("hasAuthority('DONATOR')")
+    public ResponseEntity<DonatorRankingResponseDto> getDonationRanking(
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @PageableDefault(size = 10) @Parameter(hidden = true) Pageable pageable
+    ) {
+        Long accountId = userDetails.getAccountId();
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(donationService.getDonatorsRanking(accountId, pageable));
     }
 
     @Operation(

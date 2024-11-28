@@ -6,6 +6,8 @@ import com.example.mymoo.domain.account.exception.AccountExceptionDetails;
 import com.example.mymoo.domain.account.repository.AccountRepository;
 import com.example.mymoo.domain.donation.dto.request.DonationRequestDto;
 import com.example.mymoo.domain.donation.dto.response.DonationResponseDto;
+import com.example.mymoo.domain.donation.dto.response.DonatorRankingResponseDto;
+import com.example.mymoo.domain.donation.dto.response.DonatorTotalDonationRepositoryDto;
 import com.example.mymoo.domain.donation.dto.response.ReadAccountDonationListResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadDonationResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadStoreDonationListResponseDto;
@@ -74,6 +76,7 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ReadStoreDonationListResponseDto getStoreDonationList(
         final Long storeId,
         final Pageable pageable
@@ -88,6 +91,7 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ReadAccountDonationListResponseDto getAccountDonationList(
         final Long accountId,
         final Integer limit,
@@ -112,6 +116,7 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ReadDonationResponseDto getDonation(
         final Long accountId,
         final Long donationId
@@ -131,5 +136,21 @@ public class DonationServiceImpl implements DonationService {
         } else{
             return ReadDonationResponseDto.from(donation);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DonatorRankingResponseDto getDonatorsRanking(
+        final Long accountId,
+        final Pageable pageable
+    ) {
+        DonatorTotalDonationRepositoryDto accountTotalDonation = donationRepository.findTotalDonationByAccountId(accountId)
+            .orElseThrow(() -> new AccountException(AccountExceptionDetails.ACCOUNT_NOT_FOUND));
+
+        return DonatorRankingResponseDto.from(
+            accountTotalDonation,
+            donationRepository.findRankByAccountId(accountId),
+            donationRepository.findDonatorRankings(pageable)
+        );
     }
 }
