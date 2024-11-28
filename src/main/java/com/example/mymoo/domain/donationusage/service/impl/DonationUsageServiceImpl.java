@@ -17,6 +17,8 @@ import com.example.mymoo.domain.donationusage.repository.DonationUsageRepository
 import com.example.mymoo.domain.donationusage.service.DonationUsageService;
 import com.example.mymoo.domain.store.entity.Store;
 import com.example.mymoo.domain.store.repository.StoreRepository;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,14 +49,25 @@ public class DonationUsageServiceImpl implements DonationUsageService {
         Child child = childRepository.findByAccount_Id(donationUsageCreateRequestDto.childAccountId())
             .orElseThrow(() -> new ChildException(ChildExceptionDetails.CHILD_NOT_FOUND));
 
+        // 자신의 가게가 아닌 다른 가게의 후원을 이용하려 할 때
         Store storeUsingDonation = donation.getStore();
-        // 해당 가게 계정이 가진 store 들의 id들 뽑기
         List<Store> storesOwns = storeRepository.findAllByAccount_Id(storeAccountId);
         Long storeUsingDonationId = storeUsingDonation.getId();
         boolean hasMatchingStore = storesOwns.stream()
             .anyMatch(store -> store.getId().equals(storeUsingDonationId));
         if (!hasMatchingStore){
             throw new DonationUsageException(DonationUsageExceptionDetails.FORBIDDEN_ACCESS_TO_OTHER_STORE);
+        }
+
+        // 후원 사용을 요청한 CHILD 계정이 당일에 후원권을 사용한 이력이 2회 이상 있는 경우
+        LocalDate today = LocalDate.now();
+        long usageCountToday = donationUsageRepository.countByChildAndCreatedAtBetween(
+            child,
+            today.atStartOfDay(),
+            today.atTime(LocalTime.MAX)
+        );
+        if (usageCountToday >= 2) {
+            throw new DonationUsageException(DonationUsageExceptionDetails.EXCEEDED_DAILY_USAGE_LIMIT);
         }
 
         // 사용 여부 업데이트
