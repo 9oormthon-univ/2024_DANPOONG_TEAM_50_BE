@@ -90,7 +90,7 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(storeService.getMenusByStoreId(id));
     }
 
-    @PatchMapping("{storeId}")
+    @PatchMapping("{storeId}/likes")
     @Operation(
             summary = "[공통]가게 좋아요 증가/감소",
             description = "id 값으로 기준으로 특정 가게의 좋아요를 반영합니다. 이미 누른 경우 좋아요가 1 감소되고 누르지 않은 경우 좋아요가 1 증가됩니다.",
@@ -109,7 +109,7 @@ public class StoreController {
         );
     }
 
-    @PatchMapping("{storeId}")
+    @PatchMapping("{storeId}/bookmarks")
     @Operation(
             summary = "[공통]찜한 가게 추가/제거",
             description = "id 값으로 기준으로 특정 가게를 자신의 찜 목록에 추가하거나 제거합니다. 추가되어있다면 제거되고, 없었다면 추가됩니다.",
