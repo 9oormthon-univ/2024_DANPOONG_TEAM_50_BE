@@ -14,6 +14,8 @@ public enum DonationUsageExceptionDetails implements ExceptionDetails {
     FORBIDDEN_ACCESS_TO_OTHER_STORE(HttpStatus.FORBIDDEN, "해당 후원을 사용할 권한이 없습니다."),
     // 자신이 사용하지 않은 후원권에 대해 후원자에게 감사 메시지를 쓰려 할 때
     FORBIDDEN_TO_WRITE_MESSAGE_TO_OTHER_DONATION(HttpStatus.FORBIDDEN, "해당 후원에 대해 메시지를 작성할 권한이 없습니다."),
+    // 아동이 하루에 3회 이상 후원을 사용하려 할 때
+    EXCEEDED_DAILY_USAGE_LIMIT(HttpStatus.BAD_REQUEST, "아동은 하루에 2회까지만 후원을 사용할 수 있습니다.")
     ;
 
     private final HttpStatus status;
