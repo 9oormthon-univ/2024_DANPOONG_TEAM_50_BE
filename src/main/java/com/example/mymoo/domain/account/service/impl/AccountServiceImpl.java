@@ -63,6 +63,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ReadAccountResponseDto getAccount(final Long accountId) {
         return ReadAccountResponseDto.from(
             accountRepository.findById(accountId)

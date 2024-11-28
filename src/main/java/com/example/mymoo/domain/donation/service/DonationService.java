@@ -2,6 +2,7 @@ package com.example.mymoo.domain.donation.service;
 
 import com.example.mymoo.domain.donation.dto.request.DonationRequestDto;
 import com.example.mymoo.domain.donation.dto.response.DonationResponseDto;
+import com.example.mymoo.domain.donation.dto.response.DonatorRankingResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadAccountDonationListResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadDonationResponseDto;
 import com.example.mymoo.domain.donation.dto.response.ReadStoreDonationListResponseDto;
@@ -27,5 +28,9 @@ public interface DonationService {
     ReadDonationResponseDto getDonation(
         final Long accountId,
         final Long donationId
+    );
+    DonatorRankingResponseDto getDonatorsRanking(
+        final Long accountId,
+        final Pageable pageable
     );
 }
