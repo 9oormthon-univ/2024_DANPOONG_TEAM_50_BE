@@ -325,17 +325,18 @@ public class StoreSeedService {
             if (isNew) {
                 updated += 1;
                 Store newStore = Store.builder()
-                        .name(row.getName())
-                        .likeCount(0)
-                        .allDonation(0L)
-                        .usableDonation(0L)
-                        .zipCode(row.getZipcode())
-                        .address(row.getAddressNew().substring(4))
-                        .imagePath(storeImages.get(index%5))
-                        .longitude(row.getLOGT())
-                        .latitude(row.getLAT())
-                        .account(storeAccount)
-                        .build();
+                    .name(row.getName())
+                    .zipCode(row.getZipcode())
+                    .address(row.getAddressNew().substring(4))
+                    .imagePath(storeImages.get(index%5))
+                    .stars(0D)
+                    .likeCount(0)
+                    .allDonation(0L)
+                    .usableDonation(0L)
+                    .longitude(row.getLOGT())
+                    .latitude(row.getLAT())
+                    .account(storeAccount)
+                    .build();
 
                 storeRepository.save(newStore);
 

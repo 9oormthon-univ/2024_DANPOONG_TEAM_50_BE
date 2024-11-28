@@ -53,24 +53,18 @@ public class Store extends BaseEntity {
     @ColumnDefault("0")
     private Long usableDonation;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private AddressOld addressOld;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private AddressNew addressNew;
-
     @Column(name = "longitude", nullable = false)
     private Double longitude;
 
     @Column(name = "latitude", nullable = false)
     private Double latitude;
 
-    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
-    private List<Menu> menus;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
+
+    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+    private List<Menu> menus;
 
     @Builder
     public Store(
@@ -82,8 +76,6 @@ public class Store extends BaseEntity {
             Integer likeCount,
             Long allDonation,
             Long usableDonation,
-            AddressOld addressOld,
-            AddressNew addressNew,
             Double longitude,
             Double latitude,
             Account account,
@@ -97,8 +89,6 @@ public class Store extends BaseEntity {
         this.likeCount = likeCount;
         this.allDonation = allDonation;
         this.usableDonation = usableDonation;
-        this.addressOld = addressOld;
-        this.addressNew = addressNew;
         this.longitude = longitude;
         this.latitude = latitude;
         this.account = account;
@@ -123,11 +113,5 @@ public class Store extends BaseEntity {
             throw new StoreException(StoreExceptionDetails.NOT_ENOUGH_STORE_POINT);
         }
         this.usableDonation -= amount;
-    }
-    public void updateAddressOld(AddressOld addressOld) {
-        this.addressOld = addressOld;
-    }
-    public void updateAddressNew(AddressNew addressNew) {
-        this.addressNew = addressNew;
     }
 }
