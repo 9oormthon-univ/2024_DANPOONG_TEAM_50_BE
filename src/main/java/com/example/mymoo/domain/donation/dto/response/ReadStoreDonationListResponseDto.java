@@ -32,12 +32,14 @@ public record ReadStoreDonationListResponseDto(
     }
     @Builder
     public record DonationDto(
+        Long donationId,
         Long point,
         String donator,
         LocalDateTime donatedAt
     ) {
         public static DonationDto from(Donation donation) {
             return DonationDto.builder()
+                .donationId(donation.getId())
                 .point(donation.getPoint())
                 .donator(donation.getAccount().getNickname())
                 .donatedAt(donation.getCreatedAt())
