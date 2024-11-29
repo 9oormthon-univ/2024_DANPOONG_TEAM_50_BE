@@ -1,4 +1,4 @@
-package com.example.mymoo.global.aop;
+package com.example.mymoo.global.aop.log;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

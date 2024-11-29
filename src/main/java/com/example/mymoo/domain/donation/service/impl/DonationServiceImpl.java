@@ -27,7 +27,7 @@ import com.example.mymoo.domain.store.repository.StoreRepository;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import com.example.mymoo.global.aop.LogExecutionTime;
+import com.example.mymoo.global.aop.log.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

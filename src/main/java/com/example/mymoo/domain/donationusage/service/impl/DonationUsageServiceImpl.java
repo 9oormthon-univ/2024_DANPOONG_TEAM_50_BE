@@ -22,7 +22,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
-import com.example.mymoo.global.aop.LogExecutionTime;
+import com.example.mymoo.global.aop.log.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

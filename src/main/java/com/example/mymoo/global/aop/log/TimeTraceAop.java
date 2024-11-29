@@ -1,4 +1,4 @@
-package com.example.mymoo.global.aop;
+package com.example.mymoo.global.aop.log;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -8,15 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import java.util.Arrays;
-
 @Aspect
 @Component
 public class TimeTraceAop {
 
     private final Logger log = LoggerFactory.getLogger(TimeTraceAop.class);
 
-    @Around("@within(com.example.mymoo.global.aop.LogExecutionTime)")
+    @Around("@within(com.example.mymoo.global.aop.log.LogExecutionTime)")
     public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start(joinPoint.getSignature().toShortString()); // 태스크 이름 설정 후 측정 시작

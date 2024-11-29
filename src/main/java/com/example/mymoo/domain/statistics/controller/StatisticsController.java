@@ -3,9 +3,11 @@ package com.example.mymoo.domain.statistics.controller;
 import com.example.mymoo.domain.statistics.dto.response.ChildStatisticsDTO;
 import com.example.mymoo.domain.statistics.dto.response.StoreStatisticsDTO;
 import com.example.mymoo.domain.statistics.dto.response.UtilizationStatisticsDTO;
+import com.example.mymoo.domain.statistics.service.StatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class StatisticsController {
 
+    private final StatisticsService statisticsService;
+
     @Operation(
             summary = "[톻계] 구 별 아동 수 통계",
             description = "구 별로 거주하는 결식아동의 수를 나타냅니다.",
@@ -23,10 +27,12 @@ public class StatisticsController {
                     @ApiResponse(responseCode = "200", description = "아동 수 통계 조회 성공"),
             }
     )
-    @GetMapping("chlidren")
+    @GetMapping("children")
     public ResponseEntity<ChildStatisticsDTO> getChildStatistics(
     ){
-        return null;
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+                statisticsService.getChildStatistics()
+        );
     }
 
     @Operation(
@@ -39,7 +45,9 @@ public class StatisticsController {
     @GetMapping("utilizations")
     public ResponseEntity<UtilizationStatisticsDTO> getUtilizationStatistics(
     ){
-        return null;
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+                statisticsService.getUtilizationStatistics()
+        );
     }
 
     @Operation(
@@ -52,7 +60,9 @@ public class StatisticsController {
     @GetMapping("stores")
     public ResponseEntity<StoreStatisticsDTO> getStoreStatistics(
     ){
-        return null;
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+                statisticsService.getStoreStatistics()
+        );
     }
 
 }
