@@ -26,15 +26,6 @@ public class Location {
     @Column(name="gu",  columnDefinition = "char(10)")
     private String gu;
 
-    @Column(name="dong", columnDefinition = "char(100)")
-    private String dongUepmean;
-
-    @Column(name="ro", nullable = false, columnDefinition = "char(50)")
-    private String ro;
-
-    @Column(name="detail", nullable = false, columnDefinition = "char(100)")
-    private String detail;
-
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "child_id", nullable = false)
@@ -45,17 +36,11 @@ public class Location {
             final String Do,
             final String sigun,
             final String gu,
-            final String dongUepmean,
-            final String ro,
-            final String detail,
             final Child child
     ){
         this.Do = Do;
         this.sigun = sigun;
         this.gu = gu;
-        this.dongUepmean = dongUepmean;
-        this.ro = ro;
-        this.detail = detail;
         this.child = child;
     }
 }

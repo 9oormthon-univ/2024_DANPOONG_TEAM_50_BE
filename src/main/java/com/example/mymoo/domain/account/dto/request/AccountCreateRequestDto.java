@@ -43,7 +43,12 @@ public record AccountCreateRequestDto(
 
     @NotBlank(message = "카드번호는 필수 항목입니다")
     @Pattern(regexp = "^\\d{16}$", message = "카드 번호는 16자리 숫자여야 합니다.")
-            String cardNumber
+    String cardNumber,
+
+    // 도로명 주소 도, 시/군, 구 까지만
+    String Do,
+    String sigun,
+    String gu
 ) {
 
 }
