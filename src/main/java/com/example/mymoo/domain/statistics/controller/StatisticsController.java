@@ -30,7 +30,7 @@ public class StatisticsController {
     @GetMapping("children")
     public ResponseEntity<ChildStatisticsDTO> getChildStatistics(
     ){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 statisticsService.getChildStatistics()
         );
     }
@@ -45,7 +45,7 @@ public class StatisticsController {
     @GetMapping("utilizations")
     public ResponseEntity<UtilizationStatisticsDTO> getUtilizationStatistics(
     ){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 statisticsService.getUtilizationStatistics()
         );
     }
@@ -60,7 +60,7 @@ public class StatisticsController {
     @GetMapping("stores")
     public ResponseEntity<StoreStatisticsDTO> getStoreStatistics(
     ){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 statisticsService.getStoreStatistics()
         );
     }
