@@ -28,7 +28,7 @@ public class UtilizationStatisticsElement {
         if (allDonation != null && allDonation > 0) {
             this.utilization = BigDecimal.valueOf(
                     usableDonation != null ?
-                            usableDonation.doubleValue()*100 / allDonation.doubleValue() : 0.0)
+                            (allDonation.doubleValue()-usableDonation.doubleValue())*100 / allDonation.doubleValue() : 0.0)
                     .setScale(2, RoundingMode.HALF_UP).doubleValue();
         } else {
             this.utilization = 0.0;
