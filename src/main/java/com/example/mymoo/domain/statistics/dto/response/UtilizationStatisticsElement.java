@@ -9,7 +9,7 @@ import java.math.RoundingMode;
 public class UtilizationStatisticsElement {
     private String address;
     private Long allDonation;
-    private Long usedDonation;
+    private Long usableDonation;
     private Double utilization;
 
     public UtilizationStatisticsElement(
@@ -23,12 +23,13 @@ public class UtilizationStatisticsElement {
         if (guName != null){
             this.address += " "+guName;
         }
-        this.allDonation = allDonation != null ? allDonation : 0L;
-        this.usedDonation = this.allDonation - (usableDonation != null ? usableDonation : 0L);
-        if (this.allDonation > 0) {
+        this.allDonation = allDonation;
+        this.usableDonation = usableDonation;
+        if (allDonation != null && allDonation > 0) {
             this.utilization = BigDecimal.valueOf(
-                this.usedDonation*100 / this.allDonation
-            ).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                    usableDonation != null ?
+                            (allDonation.doubleValue()-usableDonation.doubleValue())*100 / allDonation.doubleValue() : 0.0)
+                    .setScale(2, RoundingMode.HALF_UP).doubleValue();
         } else {
             this.utilization = 0.0;
         }
