@@ -10,7 +10,7 @@ import com.example.mymoo.domain.account.exception.AccountException;
 import com.example.mymoo.domain.account.exception.AccountExceptionDetails;
 import com.example.mymoo.domain.account.repository.AccountRepository;
 import com.example.mymoo.domain.account.service.AccountService;
-import com.example.mymoo.global.aop.LogExecutionTime;
+import com.example.mymoo.global.aop.log.LogExecutionTime;
 import com.example.mymoo.global.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

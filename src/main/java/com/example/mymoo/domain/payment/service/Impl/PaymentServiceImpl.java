@@ -12,7 +12,7 @@ import com.example.mymoo.domain.payment.dto.response.PayResponseDTO;
 import com.example.mymoo.domain.payment.exception.PaymentException;
 import com.example.mymoo.domain.payment.exception.PaymentExceptionDetails;
 import com.example.mymoo.domain.payment.service.PaymentService;
-import com.example.mymoo.global.aop.LogExecutionTime;
+import com.example.mymoo.global.aop.log.LogExecutionTime;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +20,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 
 @Service @LogExecutionTime

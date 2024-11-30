@@ -52,8 +52,8 @@ public class StoreSeedService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final int All_PAGE = 10;
-    private final int PAGE_SIZE = 10;
+    @Value("${api.storeData.all-page}") int All_PAGE;
+    @Value("${api.storeData.page-size}") int PAGE_SIZE;
 
     @Value("${api.storeData.uri}") String uri;
     @Value("${api.storeData.key}") String key;

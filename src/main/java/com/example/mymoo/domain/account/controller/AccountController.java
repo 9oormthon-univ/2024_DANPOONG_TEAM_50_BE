@@ -52,7 +52,13 @@ public class AccountController {
             if(accountCreateRequestDto.cardNumber() == null){
                 throw new ChildException(ChildExceptionDetails.CARD_NUMBER_BLANK);
             }else{
-                childService.createChild(accountResponse.accountId(), accountCreateRequestDto.cardNumber());
+                childService.createChild(
+                        accountResponse.accountId(),
+                        accountCreateRequestDto.cardNumber(),
+                        accountCreateRequestDto.Do(),
+                        accountCreateRequestDto.sigun(),
+                        accountCreateRequestDto.gu()
+                );
             }
         }
         return ResponseEntity
