@@ -38,7 +38,6 @@ public class ChildServiceImpl implements ChildService {
         if (childRepository.existsByAccount_Id(accountId)){
             throw new ChildException(ChildExceptionDetails.CHILD_ALREADY_EXISTS);
         }
-        foundAccount.changeUserRoleTo(UserRole.CHILD);
         Child newChild = childRepository.save(
                 Child.builder()
                         .account(foundAccount)
