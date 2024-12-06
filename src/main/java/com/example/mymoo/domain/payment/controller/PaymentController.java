@@ -36,7 +36,7 @@ public class PaymentController {
         //승인 처리 - 이 부분은 프론트에서 1차적으로 리다이렉트
         // 프론트에서 받은 결제 정보(pg_token)를 해당 api에 넘겨주면 서버에 반영됨
         return ResponseEntity.status(HttpStatus.ACCEPTED)
-                .body(paymentService.approve(pgToken, tid, userDetails.getAccountId()));
+                .body(paymentService.approve(tid, pgToken, userDetails.getAccountId()));
     }
 
     @GetMapping("cancel")
