@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&#54980;&#50896; &#49324;&#50857; &#45236;&#50669; &#50504;&#45236;</title>
+    <link th:href="@{css/email.css}" rel="stylesheet">
+</head>
+<body style="font-family: 'Pretendard', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;">
+<div class="receipt-container" style="background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 360px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <div class="receipt-header" style="text-align: center;
+    margin-bottom: 20px;">
+        <img width="107" alt="KakaoTalk_20241206_203440105" src="https://github.com/user-attachments/assets/576bd699-c42e-4138-b128-88a44f1f2f05">
+        <h1 class="receipt-title" style="font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;">&#47560;&#51060;&#47924; &#44208;&#51228; &#45236;&#50669; &#50504;&#45236;</h1>
+    </div>
+    <div class="receipt-body" style="margin-top: 20px;">
+        <div class="receipt-item" style="display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;">
+            <span class="item-label" style="color: #555;">&#49324;&#50857;&#46108; &#44032;&#44172;</span>
+            <span class="item-value" th:text="${storeName}" style="color: #000;
+    font-weight: bold;">15,000&#50896;</span>
+        </div>
+        <div class="receipt-item" style="display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;">
+            <span class="item-label" style="color: #555;">&#44552;&#50529;</span>
+            <span class="item-value" th:text="${usedPrice}" style="color: #000;
+    font-weight: bold;">15,000&#50896;</span>
+        </div>
+        <div class="receipt-item" style="display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;">
+            <span class="item-label" style="color: #555;">&#49324;&#50857;&#54620; &#50500;&#46041;</span>
+            <span class="item-value" th:text="${childName}" style="color: #000;
+    font-weight: bold;">&#55148;&#47581;&#51060;</span>
+        </div>
+        <div class="receipt-item" style="display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;">
+            <span class="item-label" style="color: #555;">&#49324;&#50857;&#54620; &#49884;&#44036;</span>
+            <span class="item-value" th:text="${usedTime}" style="color: #000;
+    font-weight: bold;">2024-11-12 13:30</span>
+        </div>
+        <div class="receipt-item" style="display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;">
+            <span class="item-label" style="color: #555;">&#54980;&#50896;&#54620; &#49884;&#44036;</span>
+            <span class="item-value" th:text="${donatedTime}" style="color: #000;
+    font-weight: bold;">2024-12-05 14:30</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

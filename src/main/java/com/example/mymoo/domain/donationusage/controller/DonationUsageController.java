@@ -2,7 +2,10 @@ package com.example.mymoo.domain.donationusage.controller;
 
 import com.example.mymoo.domain.donationusage.dto.request.DonationUsageCreateRequestDto;
 import com.example.mymoo.domain.donationusage.dto.request.DonationUsageUpdateMessageRequestDto;
+import com.example.mymoo.domain.donationusage.entity.DonationUsage;
 import com.example.mymoo.domain.donationusage.service.DonationUsageService;
+import com.example.mymoo.domain.email.EmailClient;
+import com.example.mymoo.domain.email.dto.EmailSendDTO;
 import com.example.mymoo.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,11 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/donation-usages")
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DonationUsageController {
 
     private final DonationUsageService donationUsageService;
+    private final EmailClient emailClient;
     @Operation(
         summary = "[음식점] 후원 금액 사용 처리",
         description = "음식점 계정에서 QR 코드 인식 시 해당 API를 호출합니다.",
@@ -38,8 +38,9 @@ public class DonationUsageController {
         @Valid @RequestBody DonationUsageCreateRequestDto donationUsageCreateRequestDto
     ) {
         Long storeAccountId = userDetails.getAccountId();
-        donationUsageService.useDonation(storeAccountId, donationUsageCreateRequestDto);
-        // TODO - 알림 기능 추가
+        DonationUsage donationUsage =  donationUsageService.useDonation(storeAccountId, donationUsageCreateRequestDto);
+        // 후원 완료 후 알림 메일 전송
+        emailClient.sendDonationUsageMail(EmailSendDTO.from(donationUsage));
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .build();
