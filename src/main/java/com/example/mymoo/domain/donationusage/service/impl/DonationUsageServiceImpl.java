@@ -40,7 +40,7 @@ public class DonationUsageServiceImpl implements DonationUsageService {
     private final StoreRepository storeRepository;
 
     @Override
-    public void useDonation(
+    public DonationUsage useDonation(
         final Long storeAccountId,
         final DonationUsageCreateRequestDto donationUsageCreateRequestDto
     ) {
@@ -77,7 +77,7 @@ public class DonationUsageServiceImpl implements DonationUsageService {
         // store 계정의 point 증가. 향후 현금으로 바꿀 수 있음
         storeUsingDonation.getAccount().chargePoint(donation.getPoint());
 
-        donationUsageRepository.save(
+        return donationUsageRepository.save(
             DonationUsage.builder()
                 .child(child)
                 .donation(donation)
