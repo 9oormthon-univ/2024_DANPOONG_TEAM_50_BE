@@ -20,4 +20,6 @@ public interface DonationRepository extends JpaRepository<Donation, Long>, Custo
         Long accountId,
         Pageable pageable
     );
+
+    Boolean existsByAccount_Id(Long accountId);
 }
