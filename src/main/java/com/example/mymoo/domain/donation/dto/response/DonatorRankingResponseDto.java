@@ -1,9 +1,12 @@
 package com.example.mymoo.domain.donation.dto.response;
 
+import com.example.mymoo.domain.account.exception.AccountException;
+import com.example.mymoo.domain.account.exception.AccountExceptionDetails;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.NonNull;
 import org.springframework.data.domain.Slice;
@@ -12,37 +15,16 @@ import org.springframework.data.domain.Slice;
 public record DonatorRankingResponseDto(
     @NonNull DonatorRankingDto donatorRanking,
 
-    @NonNull DonatorRankingListDto rankings
+    @NonNull List<DonatorTotalDonationRepositoryDto> rankings
 ) {
     public static DonatorRankingResponseDto from(
-        DonatorTotalDonationRepositoryDto donatorTotalDonationRepositoryDto,
-        Long donatorRank,
-        Slice<DonatorTotalDonationRepositoryDto> donatorTotalDonationRepositoryDtoSlice
+        List<DonatorTotalDonationRepositoryDto> sortedDonators,
+        Long accountId
     ){
         return DonatorRankingResponseDto.builder()
-            .donatorRanking(DonatorRankingDto.from(donatorTotalDonationRepositoryDto, donatorRank))
-            .rankings(DonatorRankingListDto.from(donatorTotalDonationRepositoryDtoSlice))
+            .donatorRanking(DonatorRankingDto.from(sortedDonators, accountId))
+            .rankings(sortedDonators.subList(0, Math.min(5, sortedDonators.size())))
             .build();
-    }
-
-    @Builder
-    public record DonatorRankingListDto(
-        @NonNull List<DonatorTotalDonationRepositoryDto> donations,
-        boolean hasNext,
-        int numberOfElements,
-        int pageNumber,
-        int pageSize
-    ) {
-        public static DonatorRankingListDto from(
-            Slice<DonatorTotalDonationRepositoryDto> donatorTotalDonationRepositoryDtoSlice) {
-            return DonatorRankingListDto.builder()
-                .donations(donatorTotalDonationRepositoryDtoSlice.toList())
-                .hasNext(donatorTotalDonationRepositoryDtoSlice.hasNext())
-                .numberOfElements(donatorTotalDonationRepositoryDtoSlice.getNumberOfElements())
-                .pageNumber(donatorTotalDonationRepositoryDtoSlice.getNumber())
-                .pageSize(donatorTotalDonationRepositoryDtoSlice.getSize())
-                .build();
-        }
     }
 
     @Builder
@@ -54,16 +36,36 @@ public record DonatorRankingResponseDto(
         @NotNull Long rank
     ) {
         public static DonatorRankingDto from(
-            DonatorTotalDonationRepositoryDto donatorTotalDonationRepositoryDto,
-            Long donatorRank
-        ){
-            return DonatorRankingDto.builder()
-                .donator(donatorTotalDonationRepositoryDto.donator())
-                .profileImageUrl(donatorTotalDonationRepositoryDto.profileImageUrl())
-                .totalDonation(donatorTotalDonationRepositoryDto.totalDonation())
-                .lastDonatedAt(donatorTotalDonationRepositoryDto.lastDonatedAt())
-                .rank(donatorRank)
-                .build();
+            List<DonatorTotalDonationRepositoryDto> sortedDonators,
+            Long accountId
+        ) {
+            return findDonatorByAccountId(sortedDonators, accountId)
+                .map(searchResultDto -> DonatorRankingDto.builder()
+                    .donator(searchResultDto.donator().donator())
+                    .profileImageUrl(searchResultDto.donator().profileImageUrl())
+                    .totalDonation(searchResultDto.donator().totalDonation())
+                    .lastDonatedAt(searchResultDto.donator().lastDonatedAt())
+                    .rank(searchResultDto.rank())
+                    .build())
+                .orElseThrow(() -> new AccountException(AccountExceptionDetails.ACCOUNT_NOT_FOUND));
         }
+
+        private static Optional<DonatorSearchResult> findDonatorByAccountId(
+            List<DonatorTotalDonationRepositoryDto> sortedDonators,
+            Long accountId
+        ) {
+            for (int i = 0; i < sortedDonators.size(); i++) {
+                DonatorTotalDonationRepositoryDto donatorDto = sortedDonators.get(i);
+                if (donatorDto.accountId().equals(accountId)) {
+                    return Optional.of(new DonatorSearchResult(donatorDto, (long) (i + 1)));
+                }
+            }
+            return Optional.empty();
+        }
+
+        private record DonatorSearchResult(
+            DonatorTotalDonationRepositoryDto donator,
+            Long rank
+        ) {}
     }
 }
