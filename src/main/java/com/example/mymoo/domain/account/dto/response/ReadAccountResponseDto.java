@@ -1,6 +1,7 @@
 package com.example.mymoo.domain.account.dto.response;
 
 import com.example.mymoo.domain.account.entity.Account;
+import com.example.mymoo.global.enums.UserRole;
 import lombok.Builder;
 import lombok.NonNull;
 
@@ -11,7 +12,8 @@ public record ReadAccountResponseDto(
     String phone_number,
     @NonNull String nickname,
     @NonNull Long point,
-    @NonNull String profileImageUrl
+    @NonNull String profileImageUrl,
+    @NonNull UserRole role
 ) {
     public static ReadAccountResponseDto from(Account account){
         return ReadAccountResponseDto.builder()
@@ -21,6 +23,7 @@ public record ReadAccountResponseDto(
             .nickname(account.getNickname())
             .point(account.getPoint())
             .profileImageUrl(account.getProfileImageUrl())
+            .role(account.getRole())
             .build();
     }
 }
