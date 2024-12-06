@@ -40,7 +40,7 @@ public class StoreController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Parameter(description = "page 의 순서를 의미합니다.") @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @Parameter(description = "page 의 크기를 의미합니다.") @RequestParam(value = "size", required = false, defaultValue = "10") int size,
-            @Parameter(description = "정렬 기준입니다. 좋아요 많은 순: likeCount, 후원금액 높은 순: usableDonation, 리뷰 많은 순: reviewCount") @RequestParam(value = "sortby", required = false, defaultValue = "likeCount") String sortby,
+            @Parameter(description = "정렬 기준입니다. 좋아요 많은 순: likeCount, 후원금액 높은 순: usableDonation, 리뷰 많은 순: reviewCount, 별점 순: stars") @RequestParam(value = "sortby", required = false, defaultValue = "likeCount") String sortby,
             @Parameter(description = "검색할 keyword를 의미합니다.") @RequestParam(value = "keyword", required = false) String keyword,
             @Parameter(description = "현재위치의 경도를 의미합니다.") @RequestParam(value = "logt", required = false) Double logt,
             @Parameter(description = "현재위치의 위도를 의미합니다.")  @RequestParam(value = "lat", required = false) Double lat
