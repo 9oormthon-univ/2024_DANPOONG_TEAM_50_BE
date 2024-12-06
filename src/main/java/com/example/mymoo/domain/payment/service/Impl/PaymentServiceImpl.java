@@ -39,7 +39,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Value("${kakao.pay.partner-order-id}")
     private String partnerOrderId;
 
-    private String tid;
 
     public KakaoPayReadyResponse payReady(String name, Integer totalPrice, Long accountId){
         // Request header
@@ -69,14 +68,12 @@ public class PaymentServiceImpl implements PaymentService {
                 entityMap,
                 KakaoPayReadyResponse.class
         );
-        this.tid = response.getBody().getTid();
-        // 주문번호와 TID를 매핑해서 저장해놓는다.
         // Mapping TID with partner_order_id then save it to use for approval request.
         return response.getBody();
     }
 
     @Transactional
-    public PayResponseDTO approve(String pgToken, String tida, Long accountId){
+    public PayResponseDTO approve(String tid, String pgToken, Long accountId){
         // ready할 때 저장해놓은 TID로 승인 요청
         // Call “Execute approved payment” API by pg_token, TID mapping to the current payment transaction and other parameters.
         HttpHeaders headers = new HttpHeaders();
