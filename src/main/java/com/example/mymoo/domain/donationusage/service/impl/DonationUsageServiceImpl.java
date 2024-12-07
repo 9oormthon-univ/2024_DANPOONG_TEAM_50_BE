@@ -15,6 +15,8 @@ import com.example.mymoo.domain.donationusage.exception.DonationUsageException;
 import com.example.mymoo.domain.donationusage.exception.DonationUsageExceptionDetails;
 import com.example.mymoo.domain.donationusage.repository.DonationUsageRepository;
 import com.example.mymoo.domain.donationusage.service.DonationUsageService;
+import com.example.mymoo.domain.email.EmailClient;
+import com.example.mymoo.domain.email.dto.EmailSendDTO;
 import com.example.mymoo.domain.store.entity.Store;
 import com.example.mymoo.domain.store.repository.StoreRepository;
 import java.time.LocalDate;
@@ -38,6 +40,7 @@ public class DonationUsageServiceImpl implements DonationUsageService {
     private final ChildRepository childRepository;
     private final DonationUsageRepository donationUsageRepository;
     private final StoreRepository storeRepository;
+    private final EmailClient emailClient;
 
     @Override
     public DonationUsage useDonation(
@@ -77,12 +80,14 @@ public class DonationUsageServiceImpl implements DonationUsageService {
         // store 계정의 point 증가. 향후 현금으로 바꿀 수 있음
         storeUsingDonation.getAccount().chargePoint(donation.getPoint());
 
-        return donationUsageRepository.save(
+        DonationUsage donationUsage =  donationUsageRepository.save(
             DonationUsage.builder()
                 .child(child)
                 .donation(donation)
                 .build()
         );
+        emailClient.sendDonationUsageMail(EmailSendDTO.from(donationUsage));
+        return donationUsage;
     }
 
     @Override

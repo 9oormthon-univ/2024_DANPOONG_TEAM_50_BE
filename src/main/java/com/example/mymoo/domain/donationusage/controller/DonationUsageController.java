@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 public class DonationUsageController {
 
     private final DonationUsageService donationUsageService;
-    private final EmailClient emailClient;
     @Operation(
         summary = "[음식점] 후원 금액 사용 처리",
         description = "음식점 계정에서 QR 코드 인식 시 해당 API를 호출합니다.",
@@ -40,7 +39,6 @@ public class DonationUsageController {
         Long storeAccountId = userDetails.getAccountId();
         DonationUsage donationUsage =  donationUsageService.useDonation(storeAccountId, donationUsageCreateRequestDto);
         // 후원 완료 후 알림 메일 전송
-        emailClient.sendDonationUsageMail(EmailSendDTO.from(donationUsage));
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .build();
