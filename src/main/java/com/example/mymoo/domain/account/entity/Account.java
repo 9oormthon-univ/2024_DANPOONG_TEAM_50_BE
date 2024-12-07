@@ -16,6 +16,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.Objects;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -94,7 +95,7 @@ public class Account extends BaseEntity {
     }
 
     public void changeUserRoleTo(UserRole userRole){
-        if (Objects.equals(this.role.getAuthority(), "DONATOR")){
+        if (Set.of("DONATOR", "CHILD").contains(this.role.getAuthority())){
             this.role = userRole;
         }
         else{
