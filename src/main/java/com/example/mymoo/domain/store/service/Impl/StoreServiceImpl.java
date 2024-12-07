@@ -19,16 +19,18 @@ import com.example.mymoo.domain.store.repository.StoreRepository;
 import com.example.mymoo.domain.store.service.StoreService;
 import com.example.mymoo.domain.store.util.StoreUtil;
 import com.example.mymoo.global.aop.log.LogExecutionTime;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
-@Transactional @LogExecutionTime
+@Transactional
+@LogExecutionTime
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
@@ -39,6 +41,7 @@ public class StoreServiceImpl implements StoreService {
 
 
     // 위치기반으로 음식점을 조회
+    @Transactional(readOnly = true)
     public StoreListDTO getAllStoresByLocation(
             final Double logt,
             final Double lat,
@@ -63,6 +66,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     //keyword 를 포함하는 음식점명, 주소를 가진 음식점을 조회
+    @Transactional(readOnly = true)
     public StoreListDTO getAllStoresByKeyword(
             final String keyword,
             final Pageable pageable,
@@ -78,6 +82,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     //음식점 id로 음식점을 조회
+    @Transactional(readOnly = true)
     public StoreDetailDTO getStoreById(
             final Long storeId,
             final Long accountId
@@ -88,6 +93,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     //음식점 id로 메뉴를 조회
+    @Transactional(readOnly = true)
     public MenuListDTO getMenusByStoreId(
             final Long id
     ){
