@@ -29,8 +29,5 @@ public interface DonationService {
         final Long accountId,
         final Long donationId
     );
-    DonatorRankingResponseDto getDonatorsRanking(
-        final Long accountId,
-        final Pageable pageable
-    );
+    DonatorRankingResponseDto getDonatorsRanking(final Long accountId);
 }

@@ -143,10 +143,7 @@ public class DonationServiceImpl implements DonationService {
 
     @Override
     @Transactional(readOnly = true)
-    public DonatorRankingResponseDto getDonatorsRanking(
-        final Long accountId,
-        final Pageable pageable
-    ) {
+    public DonatorRankingResponseDto getDonatorsRanking(final Long accountId) {
         // 후원한 DONATOR 계정들
         List<DonatorTotalDonationRepositoryDto> allDonatedDonatorSortedByRankings = donationRepository.findAllDonatedDonatorsWithSort();
         // 후원하지 않은 DONATOR 계정들

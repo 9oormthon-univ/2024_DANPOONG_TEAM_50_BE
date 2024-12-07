@@ -71,13 +71,12 @@ public class DonationController {
     @GetMapping("/rankings")
     @PreAuthorize("hasAuthority('DONATOR')")
     public ResponseEntity<DonatorRankingResponseDto> getDonationRanking(
-        @AuthenticationPrincipal CustomUserDetails userDetails,
-        @PageableDefault(size = 10) @Parameter(hidden = true) Pageable pageable
+        @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long accountId = userDetails.getAccountId();
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(donationService.getDonatorsRanking(accountId, pageable));
+            .body(donationService.getDonatorsRanking(accountId));
     }
 
     @Operation(
