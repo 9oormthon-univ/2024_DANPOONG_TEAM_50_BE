@@ -39,20 +39,21 @@ public class ChildServiceImpl implements ChildService {
             throw new ChildException(ChildExceptionDetails.CHILD_ALREADY_EXISTS);
         }
         Child newChild = childRepository.save(
-                Child.builder()
-                        .account(foundAccount)
-                        .cardNumber(cardNumber)
-                        .build()
+            Child.builder()
+                .account(foundAccount)
+                .cardNumber(cardNumber)
+                .build()
         );
 
         locationRepository.save(
-                Location.builder()
-                        .Do(Do)
-                        .sigun(sigun)
-                        .gu(gu)
-                        .child(newChild)
-                        .build()
+            Location.builder()
+                .Do(Do)
+                .sigun(sigun)
+                .gu(gu)
+                .child(newChild)
+                .build()
         );
+        foundAccount.changeUserRoleTo(UserRole.CHILD);
         return newChild;
     }
 }
