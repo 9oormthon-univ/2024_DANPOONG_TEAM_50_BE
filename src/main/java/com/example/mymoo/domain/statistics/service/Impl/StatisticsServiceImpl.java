@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional @LogExecutionTime
+@Transactional(readOnly = true) @LogExecutionTime
 @RequiredArgsConstructor
 public class StatisticsServiceImpl implements StatisticsService {
 
@@ -37,7 +37,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         return UtilizationStatisticsDTO.from(utilizationStatistics);
     }
 
-    //
+    // 도 시/군 구 별 급식카드 가맹점 현황
     public StoreStatisticsDTO getStoreStatistics(){
         List<StoreStatisticsElement> storeStatistics
                 = addressNewRepository.countAddressNewByDoAndSigunAndGu();
