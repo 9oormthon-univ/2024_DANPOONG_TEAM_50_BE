@@ -28,8 +28,8 @@ public class EmailSendDTO {
                 .storeName(donationUsage.getDonation().getStore().getName())
                 .usedPrice(donationUsage.getDonation().getPoint())
                 .childName(donationUsage.getChild().getAccount().getNickname())
-                .usedTime(donationUsage.getModifiedAt())
-                .donatedTime(donationUsage.getCreatedAt())
+                .usedTime(donationUsage.getCreatedAt())
+                .donatedTime(donationUsage.getDonation().getCreatedAt())
                 .build();
     }
 }
