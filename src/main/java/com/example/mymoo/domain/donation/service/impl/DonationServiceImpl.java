@@ -25,9 +25,12 @@ import com.example.mymoo.domain.store.exception.StoreException;
 import com.example.mymoo.domain.store.exception.StoreExceptionDetails;
 import com.example.mymoo.domain.store.repository.StoreRepository;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import com.example.mymoo.global.aop.log.LogExecutionTime;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -140,17 +143,21 @@ public class DonationServiceImpl implements DonationService {
 
     @Override
     @Transactional(readOnly = true)
-    public DonatorRankingResponseDto getDonatorsRanking(
-        final Long accountId,
-        final Pageable pageable
-    ) {
-        DonatorTotalDonationRepositoryDto accountTotalDonation = donationRepository.findTotalDonationByAccountId(accountId)
-            .orElseThrow(() -> new AccountException(AccountExceptionDetails.ACCOUNT_NOT_FOUND));
-
+    public DonatorRankingResponseDto getDonatorsRanking(final Long accountId) {
+        // 후원한 DONATOR 계정들
+        List<DonatorTotalDonationRepositoryDto> allDonatedDonatorSortedByRankings = donationRepository.findAllDonatedDonatorsWithSort();
+        // 후원하지 않은 DONATOR 계정들
+        List<DonatorTotalDonationRepositoryDto> allNotDonatedDonatorSortedByRankings = accountRepository.findAllNotDonatedDonatorsWithSort(
+            allDonatedDonatorSortedByRankings.stream()
+                .map(DonatorTotalDonationRepositoryDto::accountId)
+                .toList()
+        );
         return DonatorRankingResponseDto.from(
-            accountTotalDonation,
-            donationRepository.findRankByAccountId(accountId),
-            donationRepository.findDonatorRankings(pageable)
+            Stream.concat(
+                allDonatedDonatorSortedByRankings.stream(),
+                allNotDonatedDonatorSortedByRankings.stream()
+            ).collect(Collectors.toList()),
+            accountId
         );
     }
 }

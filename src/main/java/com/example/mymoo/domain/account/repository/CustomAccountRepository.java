@@ -1,4 +1,4 @@
-package com.example.mymoo.domain.donation.repository;
+package com.example.mymoo.domain.account.repository;
 
 import com.example.mymoo.domain.donation.dto.response.DonatorTotalDonationRepositoryDto;
 import com.example.mymoo.domain.donation.entity.Donation;
@@ -8,12 +8,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
-public interface CustomDonationRepository {
-    Slice<Donation> findRecentDonationsByAccountId(
-        Long accountId,
-        LocalDateTime startDate,
-        Pageable pageable
-    );
-
-    List<DonatorTotalDonationRepositoryDto> findAllDonatedDonatorsWithSort();
+public interface CustomAccountRepository {
+    List<DonatorTotalDonationRepositoryDto> findAllNotDonatedDonatorsWithSort(final List<Long> donatedAccountIds);
 }

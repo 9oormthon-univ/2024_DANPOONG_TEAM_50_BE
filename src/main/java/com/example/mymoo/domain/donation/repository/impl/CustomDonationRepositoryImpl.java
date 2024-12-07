@@ -54,113 +54,30 @@ public class CustomDonationRepositoryImpl implements CustomDonationRepository {
     }
 
     /**
-     * 기부자 순위를 조회하며, 각 기부자의 총 기부 포인트와 마지막 기부 날짜를 기준으로 정렬합니다.
-     * 결과는 페이지네이션을 적용하여 반환합니다.
+     * 각 기부자의 총 기부 포인트와 마지막 기부 날짜를 기준으로 정렬 후 전체 기부자들의 정보를 반환합니다.
      */
     @Override
-    public Slice<DonatorTotalDonationRepositoryDto> findDonatorRankings(final Pageable pageable) {
-        List<DonatorTotalDonationRepositoryDto> content = queryFactory
-            .select(createDonatorTotalDonationProjection())
+    public List<DonatorTotalDonationRepositoryDto> findAllDonatedDonatorsWithSort() {
+        return queryFactory
+            .select(Projections.constructor(
+                DonatorTotalDonationRepositoryDto.class,
+                account.id,
+                account.nickname,
+                account.profileImageUrl,
+                donation.point.sum(),
+                donation.createdAt.max()
+            ))
             .from(donation)
             .join(donation.account, account)
             .groupBy(account.id, account.nickname, account.profileImageUrl)
             .orderBy(donation.point.sum().desc(), donation.createdAt.max().desc(), account.id.asc())
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize() + 1)
             .fetch();
-
-        return createSlice(content, pageable);
     }
-
-
-    /**
-     * 주어진 accountId에 해당하는 기부자의 총 기부 포인트와 마지막 기부 날짜를 조회하여 반환합니다.
-     */
-    @Override
-    public Optional<DonatorTotalDonationRepositoryDto> findTotalDonationByAccountId(final Long accountId) {
-        return Optional.ofNullable(queryFactory
-            .select(createDonatorTotalDonationProjection())
-            .from(donation)
-            .where(account.id.eq(accountId))
-            .join(donation.account, account)
-            .groupBy(account.id, account.nickname, account.profileImageUrl)
-            .fetchOne());
-    }
-
-    /**
-     * 자신의 총 포인트보다 큰 계정 또는 총 포인트가 같고 자신보다 최근에 후원한 계정의 수 + 1을 반환합니다.
-     */
-    @Override
-    public Long findRankByAccountId(final Long accountId) {
-        QDonation comparisonDonation = new QDonation("comparisonDonation");
-
-        JPQLQuery<Long> accountTotalPoints = getAccountTotalPoints(accountId);
-        JPQLQuery<LocalDateTime> accountLastDonationDate = getAccountLastDonationDate(accountId);
-
-        return queryFactory
-            .select(comparisonDonation.account.id.countDistinct().add(1))
-            .from(comparisonDonation)
-            .where(createRankingCondition(comparisonDonation, accountTotalPoints, accountLastDonationDate))
-            .fetchOne();
-    }
-
-    private BooleanExpression createRankingCondition(
-        QDonation comparisonDonation,
-        JPQLQuery<Long> accountTotalPoints,
-        JPQLQuery<LocalDateTime> accountLastDonationDate
-    ) {
-        return accountTotalPoints.lt(getTotalDonationPointSubquery(comparisonDonation.account.id))
-            .or(
-                accountTotalPoints.eq(getTotalDonationPointSubquery(comparisonDonation.account.id))
-                    .and(accountLastDonationDate.lt(getLastDonationDateSubquery(comparisonDonation.account.id)))
-            );
-    }
-
-    private JPQLQuery<Long> getAccountTotalPoints(Long accountId) {
-        return JPAExpressions
-            .select(donation.point.sum())
-            .from(donation)
-            .where(donation.account.id.eq(accountId));
-    }
-
-    private JPQLQuery<LocalDateTime> getAccountLastDonationDate(Long accountId) {
-        return JPAExpressions
-            .select(donation.createdAt.max())
-            .from(donation)
-            .where(donation.account.id.eq(accountId));
-    }
-
-    private ConstructorExpression<DonatorTotalDonationRepositoryDto> createDonatorTotalDonationProjection() {
-        return Projections.constructor(
-            DonatorTotalDonationRepositoryDto.class,
-            account.id,
-            account.nickname,
-            account.profileImageUrl,
-            donation.point.sum(),
-            donation.createdAt.max()
-        );
-    }
-
     private <T> Slice<T> createSlice(List<T> content, Pageable pageable) {
         boolean hasNext = content.size() > pageable.getPageSize();
         if (hasNext) {
             content.remove(content.size() - 1);
         }
         return new SliceImpl<>(content, pageable, hasNext);
-    }
-
-
-    private JPAQuery<Long> getTotalDonationPointSubquery(NumberPath<Long> accountId) {
-        return queryFactory
-            .select(donation.point.sum())
-            .from(donation)
-            .where(donation.account.id.eq(accountId));
-    }
-
-    private JPAQuery<LocalDateTime> getLastDonationDateSubquery(NumberPath<Long> accountId) {
-        return queryFactory
-            .select(donation.createdAt.max())
-            .from(donation)
-            .where(donation.account.id.eq(accountId));
     }
 }
