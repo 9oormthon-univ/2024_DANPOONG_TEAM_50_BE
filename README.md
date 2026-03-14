@@ -1,5 +1,6 @@
 <img width="1920" height="1080" alt="표지" src="https://github.com/user-attachments/assets/61a21689-320f-48e9-a86a-ee5418bf58f0" />
 <img width="1920" height="1080" alt="기획 배경 (1)" src="https://github.com/user-attachments/assets/9ae71746-92e4-42c7-8905-daa3622ac70b" />
+<img width="1920" height="1080" alt="유저 리서치" src="https://github.com/user-attachments/assets/7a52a2c1-af82-4aba-b746-98fe16d72ae5" />
 <img width="1920" height="1080" alt="문제점" src="https://github.com/user-attachments/assets/1772e899-e2b4-411c-931c-8259ab61efc3" />
 <img width="1920" height="1080" alt="해결책" src="https://github.com/user-attachments/assets/56d32e2a-5c06-443c-977a-7185d2909c81" />
 <img width="1920" height="1080" alt="서비스 구조" src="https://github.com/user-attachments/assets/f60d0e39-dbc4-40e4-9726-19f8cf821628" />
