@@ -1,45 +1,15 @@
-# 2024_DANPOONG_TEAM_50_BE
-![KakaoTalk_20241124_035709129](https://github.com/user-attachments/assets/64dca812-5181-498f-b8ed-ef0f64fa818e)
-
-
-2024 단풍톤 50팀 결식아동에게 따듯한 한끼를 - 마이무 프로젝트를 위한 BE API SERVER 입니다.
-
-## 기능 설명 및 배포 URL - Swagger Page
-API 상세 명세서는 Swagger 를 통해 배포되었습니다.
-
-배포 URL : https://api.mymoo.site/swagger-ui/index.html
-
-## 시작 가이드
-![KakaoTalk_20241124_031116284](https://github.com/user-attachments/assets/28dc6267-d21f-406d-9933-1d47104ebe58)
-
-
-본 프로젝트는 Docker, Docker Compose 를 통해 배포하였습니다.
-SpringBoot, MariaDB, Redis 총 3개의 컨테이너로 구성되어있습니다.
-
-먼저 본 레포지토리를 clone 합니다.
-```
-git clone https://github.com/9oormthon-univ/2024_DANPOONG_TEAM_50_BE.git
-
-```
-application-dev.yml 을 작성하여 환경 변수를 설정합니다.
-
-gradle 을 통해 jar 파일을 build 합니다.
-```
-chmod +x ./gradlew
-clean bootJar
-```
-서버에 Docker 를 설치하고
-Docker 를 사용하여 이미지를 만듭니다.
-```
-docker build -t ${{ IMAGEName_YOU_WANT }} .
-```
-Docker Compose 를 실행시킵니다.
-```
-docker compose up 
-```
-Docker 명령어를 통해 컨테이너가 잘 실행되었는지 확인합니다.
-```
-docker ps
-```
-
-
+<img width="1920" height="1080" alt="표지" src="https://github.com/user-attachments/assets/61a21689-320f-48e9-a86a-ee5418bf58f0" />
+<img width="1920" height="1080" alt="기획 배경" src="https://github.com/user-attachments/assets/06f0024a-b33d-4bd3-bc68-a04ad05c7ce3" />
+<img width="1920" height="1080" alt="해결책" src="https://github.com/user-attachments/assets/56d32e2a-5c06-443c-977a-7185d2909c81" />
+<img width="1920" height="1080" alt="서비스 구조" src="https://github.com/user-attachments/assets/f60d0e39-dbc4-40e4-9726-19f8cf821628" />
+<img width="1920" height="1080" alt="기대효과" src="https://github.com/user-attachments/assets/bfe48c67-a065-4faf-8bff-ace7079fb9aa" />
+<img width="1920" height="1080" alt="일반" src="https://github.com/user-attachments/assets/161c7204-c519-4127-8404-e6891db7a279" />
+<img width="1920" height="1080" alt="일반 (1)" src="https://github.com/user-attachments/assets/56bdc543-2cc3-4837-9514-596ead368654" />
+<img width="1920" height="1080" alt="일반 (2)" src="https://github.com/user-attachments/assets/7271d1d4-c62d-433a-91ae-0d0917ba0279" />
+<img width="1920" height="1080" alt="아동" src="https://github.com/user-attachments/assets/2b83aa33-46f0-4a32-a27b-fd005cee525f" />
+<img width="1920" height="1080" alt="아동 (1)" src="https://github.com/user-attachments/assets/58b9a6ce-945f-4f65-a2ad-38314ded3495" />
+<img width="1920" height="1080" alt="아동 (2)" src="https://github.com/user-attachments/assets/a30df6f1-7121-47c5-8eb4-ae9f8c78a99f" />
+<img width="1920" height="1080" alt="카카오 API 활용" src="https://github.com/user-attachments/assets/2347c825-74d8-40c0-9b94-f623e0a749ca" />
+<a href="https://www.youtube.com/watch?v=L5hQVmHrJJY">
+  <img width="1920" height="1080" alt="카카오 API 활용 (1)" src="https://github.com/user-attachments/assets/dc65fffe-7d43-449d-8221-f7bcd43b4bdf">
+</a>
