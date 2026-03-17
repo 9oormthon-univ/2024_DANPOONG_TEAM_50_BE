@@ -4,7 +4,6 @@ import com.example.mymoo.domain.account.entity.Account;
 import com.example.mymoo.domain.account.exception.AccountException;
 import com.example.mymoo.domain.account.exception.AccountExceptionDetails;
 import com.example.mymoo.domain.account.repository.AccountRepository;
-import com.example.mymoo.domain.payment.cache.PaymentHistoryRepository;
 import com.example.mymoo.domain.payment.dto.api.KakaoPayApproveRequest;
 import com.example.mymoo.domain.payment.dto.api.KakaoPayApproveResponse;
 import com.example.mymoo.domain.payment.dto.api.KakaoPayReadyRequest;
@@ -29,7 +28,6 @@ import org.springframework.web.client.RestTemplate;
 public class PaymentServiceImpl implements PaymentService {
 
     private final AccountRepository accountRepository;
-    private final PaymentHistoryRepository paymentHistoryRepository;
 
     @Value("${kakao.pay.secret-key}")
     private String secretKey;
@@ -77,9 +75,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Transactional
     public PayResponseDTO approve(String tid, String pgToken, Long accountId){
-        if (!paymentHistoryRepository.findPaymentHistory(pgToken)) { // 중복된 경우 예외 발생시켜 멱등성 보장
-            throw new PaymentException(PaymentExceptionDetails.DUPLICATED_REQUEST);
-        }
+
 
         // ready할 때 저장해놓은 TID로 승인 요청
         // Call “Execute approved payment” API by pg_token, TID mapping to the current payment transaction and other parameters.
@@ -112,9 +108,6 @@ public class PaymentServiceImpl implements PaymentService {
                     .orElseThrow(() -> new AccountException(AccountExceptionDetails.ACCOUNT_NOT_FOUND));
 
             foundAccount.chargePoint(Long.valueOf(res.getAmount().getTotal()));
-            
-            // 멱등성 보장을 위한 pgToken 캐싱
-            paymentHistoryRepository.savePaymentHistory(pgToken);
 
             return PayResponseDTO.builder()
                     .item_name(res.getItem_name())

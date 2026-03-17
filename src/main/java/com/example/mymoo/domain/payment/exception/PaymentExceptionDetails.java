@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 public enum PaymentExceptionDetails implements ExceptionDetails {
     // 가게 id가 store 테이블에 존재하지 않을 때
     APPROVE_FAILED(HttpStatus.BAD_REQUEST, "승인 요청이 실패했습니다."),
-    DUPLICATED_REQUEST(HttpStatus.TOO_MANY_REQUESTS, "해당 거래요청은 중복 요청되었습니다.")
     ;
 
     private final HttpStatus status;
